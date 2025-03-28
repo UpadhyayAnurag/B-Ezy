@@ -3,9 +3,11 @@ package org.bezy.service;
 import org.bezy.model.services_model.Hotel;
 import org.bezy.repository.services_repo.HotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class HotelServiceImpl implements HotelService{
 
     @Autowired

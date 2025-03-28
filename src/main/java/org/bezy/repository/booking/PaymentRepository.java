@@ -1,7 +1,7 @@
 package org.bezy.repository.booking;
 
 import org.bezy.model.booking.Payment;
-import org.bezy.model.enums.PaymentStatus;
+import org.bezy.enums.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

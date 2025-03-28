@@ -1,6 +1,10 @@
 package org.bezy.model.auth;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.bezy.model.services_model.CarRental;
 import org.bezy.model.services_model.Flight;
@@ -22,18 +26,26 @@ public class ServiceProvider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message = "Company Name is required")
     @Column(nullable = false, unique = true)
     private String companyName;
 
+    @NotEmpty(message = "Email is required")
+    @Email(message = "Email should be valid")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotEmpty(message = "Phone Number is required")
+    @Pattern(regexp = "^[0-9]+$", message = "Mobile number must contain only digits")
+    @Size(min = 10, max = 10, message = "Mobile number must be exactly 10 digits")
     @Column(nullable = false, unique = true)
     private String phoneNumber;
 
+    @NotEmpty(message = "Password is required")
     @Column(nullable = false)
     private String password;
 
+    @NotEmpty(message = "Field Service Type is required")
     @Column(nullable = false)
     private String serviceType; // HOTEL, FLIGHT, TAXI, CAR_RENTAL
 

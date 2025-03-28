@@ -2,8 +2,8 @@ package org.bezy.repository.booking;
 
 
 import org.bezy.model.booking.Booking;
-import org.bezy.model.enums.BookingStatus;
-import org.bezy.model.enums.ServiceType;
+import org.bezy.enums.BookingStatus;
+import org.bezy.enums.ServiceType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

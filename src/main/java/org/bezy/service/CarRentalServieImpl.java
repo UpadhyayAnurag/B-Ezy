@@ -3,9 +3,11 @@ package org.bezy.service;
 import org.bezy.model.services_model.CarRental;
 import org.bezy.repository.services_repo.CarRentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CarRentalServieImpl implements CarRentalService{
 
     @Autowired

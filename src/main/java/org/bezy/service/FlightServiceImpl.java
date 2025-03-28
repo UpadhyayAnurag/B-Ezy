@@ -3,10 +3,12 @@ package org.bezy.service;
 import org.bezy.model.services_model.Flight;
 import org.bezy.repository.services_repo.FlightRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Service
 public class FlightServiceImpl implements FlightService{
 
     @Autowired

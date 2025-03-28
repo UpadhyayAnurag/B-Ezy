@@ -2,8 +2,8 @@ package org.bezy.model.booking;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.bezy.model.enums.BookingStatus;
-import org.bezy.model.enums.ServiceType;
+import org.bezy.enums.BookingStatus;
+import org.bezy.enums.ServiceType;
 import org.bezy.model.auth.Consumer;
 
 import java.time.LocalDateTime;

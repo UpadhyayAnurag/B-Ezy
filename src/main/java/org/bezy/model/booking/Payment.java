@@ -2,7 +2,7 @@ package org.bezy.model.booking;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.bezy.model.enums.PaymentStatus;
+import org.bezy.enums.PaymentStatus;
 import org.bezy.model.auth.Consumer;
 
 import java.time.LocalDateTime;
