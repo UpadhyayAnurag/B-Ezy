@@ -20,7 +20,7 @@ public class ConsumerController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getConsumer(@PathVariable Long id) {
         // Retrieved using username to be replaced with retrieve using id method later
-        Optional<Consumer> consumer = consumerService.getConsumerByUsername("sampleUsername");
+        Optional<Consumer> consumer = consumerService.getConsumerByUsername("");
         return consumer.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
