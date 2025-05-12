@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Hotel Details')}">
+    <title>Hotel Details | B-Ezy</title>
+    <!-- Additional styles -->
+    <link rel="stylesheet" th:href="@{/css/services.css}">
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<!-- Breadcrumb -->
+<div class="bg-light py-2">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                <li class="breadcrumb-item"><a th:href="@{/services/hotels}">Hotels</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${hotel?.name ?: 'Hotel Details'}">Hotel Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Hotel Detail Section -->
+<section class="py-5">
+    <div class="container">
+        <!-- Hotel Header -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1 class="fw-bold mb-2" th:text="${hotel?.name ?: 'Grand Plaza Hotel'}">Grand Plaza Hotel</h1>
+                <p class="mb-2">
+                    <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                    <span th:text="${hotel?.location ?: 'Central Park, New York'}">Central Park, New York</span>
+                </p>
+                <div class="d-flex align-items-center">
+                    <div class="me-3">
+                            <span class="badge bg-primary fs-6 px-2 py-1">
+                                <span th:text="${hotel?.rating ?: '4.5'}">4.5</span>
+                                <i class="fas fa-star ms-1"></i>
+                            </span>
+                    </div>
+                    <div>
+                        <span class="text-muted">Based on </span>
+                        <span th:text="${hotel?.reviewCount ?: '245'}">245</span>
+                        <span class="text-muted"> reviews</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 d-flex justify-content-md-end align-items-center mt-3 mt-md-0">
+                <button class="btn btn-outline-primary me-3">
+                    <i class="far fa-heart me-1"></i> Save
+                </button>
+                <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#shareModal">
+                    <i class="fas fa-share-alt me-1"></i> Share
+                </button>
+            </div>
+        </div>
+
+        <!-- Hotel Images Gallery -->
+        <div class="row mb-5">
+            <div class="col-md-8 mb-3 mb-md-0">
+                <div class="main-image position-relative">
+                    <img th:src="${hotel?.mainImage ?: 'https://source.unsplash.com/random/800x500/?hotel-room'}" class="img-fluid rounded shadow-sm w-100" alt="Hotel Main Image" style="height: 400px; object-fit: cover;">
+                    <button class="btn btn-light position-absolute bottom-0 end-0 m-3" data-bs-toggle="modal" data-bs-target="#galleryModal">
+                        <i class="fas fa-th me-1"></i> View All Photos
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="row g-3">
+                    <div class="col-6 col-md-12">
+                        <img th:src="${hotel?.images?[0] ?: 'https://source.unsplash.com/random/400x250/?hotel-lobby'}" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image" style="height: 190px; object-fit: cover;">
+                    </div>
+                    <div class="col-6 col-md-12">
+                        <img th:src="${hotel?.images?[1] ?: 'https://source.unsplash.com/random/400x250/?hotel-pool'}" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image" style="height: 190px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hotel Details & Booking Section -->
+        <div class="row">
+            <!-- Hotel Details -->
+            <div class="col-lg-8">
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs mb-4" id="hotelTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                            Overview
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="rooms-tab" data-bs-toggle="tab" data-bs-target="#rooms" type="button" role="tab" aria-controls="rooms" aria-selected="false">
+                            Rooms
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="amenities-tab" data-bs-toggle="tab" data-bs-target="#amenities" type="button" role="tab" aria-controls="amenities" aria-selected="false">
+                            Amenities
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">
+                            Reviews
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location" type="button" role="tab" aria-controls="location" aria-selected="false">
+                            Location
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content -->
+                <div class="tab-content" id="hotelTabContent">
+                    <!-- Overview Tab -->
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-3">About This Hotel</h4>
+                                <p class="mb-4" th:text="${hotel?.description ?: 'A luxurious 5-star hotel in the heart of Manhattan, featuring stunning views of Central Park, a rooftop pool, and world-class dining options. The Grand Plaza Hotel combines timeless elegance with modern amenities to provide an unforgettable stay.'}">
+                                    A luxurious 5-star hotel in the heart of Manhattan, featuring stunning views of Central Park,
+                                    a rooftop pool, and world-class dining options. The Grand Plaza Hotel combines timeless elegance
+                                    with modern amenities to provide an unforgettable stay.
+                                </p>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Highlights</h5>
+                                        <ul class="list-unstyled highlights-list">
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>Prime location in city center
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>Luxury rooms with city views
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>Rooftop swimming pool
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>Award-winning restaurant
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check-circle text-success me-2"></i>Full-service spa
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Hotel Facilities</h5>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <ul class="list-unstyled facility-list">
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-swimming-pool text-primary me-2"></i>Swimming Pool
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-wifi text-primary me-2"></i>Free WiFi
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-dumbbell text-primary me-2"></i>Fitness Center
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-spa text-primary me-2"></i>Spa & Wellness
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-6">
+                                                <ul class="list-unstyled facility-list">
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-utensils text-primary me-2"></i>Restaurant
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-glass-martini-alt text-primary me-2"></i>Bar
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-parking text-primary me-2"></i>Parking
+                                                    </li>
+                                                    <li class="mb-2">
+                                                        <i class="fas fa-concierge-bell text-primary me-2"></i>Room Service
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="mb-3">Check-in/Check-out</h5>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-clock text-primary me-3 fa-lg"></i>
+                                            <div>
+                                                <p class="mb-0 text-muted">Check-in Time</p>
+                                                <p class="mb-0 fw-bold">From 3:00 PM</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-clock text-primary me-3 fa-lg"></i>
+                                            <div>
+                                                <p class="mb-0 text-muted">Check-out Time</p>
+                                                <p class="mb-0 fw-bold">Until 12:00 PM</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="mb-3">Policies</h5>
+                                <div class="accordion" id="policiesAccordion">
+                                    <div class="accordion-item border-0 mb-2">
+                                        <h2 class="accordion-header" id="cancellationHeading">
+                                            <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#cancellationPolicy" aria-expanded="false" aria-controls="cancellationPolicy">
+                                                Cancellation Policy
+                                            </button>
+                                        </h2>
+                                        <div id="cancellationPolicy" class="accordion-collapse collapse" aria-labelledby="cancellationHeading" data-bs-parent="#policiesAccordion">
+                                            <div class="accordion-body">
+                                                <p>Free cancellation up to 24 hours before check-in. Cancellations made less than 24 hours before check-in are subject to a one-night charge.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item border-0 mb-2">
+                                        <h2 class="accordion-header" id="childrenHeading">
+                                            <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#childrenPolicy" aria-expanded="false" aria-controls="childrenPolicy">
+                                                Children & Extra Beds
+                                            </button>
+                                        </h2>
+                                        <div id="childrenPolicy" class="accordion-collapse collapse" aria-labelledby="childrenHeading" data-bs-parent="#policiesAccordion">
+                                            <div class="accordion-body">
+                                                <p>Children of all ages are welcome. Children under 12 years stay free when using existing beds. Extra beds are available for an additional charge of $50 per night.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item border-0">
+                                        <h2 class="accordion-header" id="petsHeading">
+                                            <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#petsPolicy" aria-expanded="false" aria-controls="petsPolicy">
+                                                Pets
+                                            </button>
+                                        </h2>
+                                        <div id="petsPolicy" class="accordion-collapse collapse" aria-labelledby="petsHeading" data-bs-parent="#policiesAccordion">
+                                            <div class="accordion-body">
+                                                <p>Pets are allowed on request. Charges may apply. Maximum 2 pets per room.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rooms Tab -->
+                    <div class="tab-pane fade" id="rooms" role="tabpanel" aria-labelledby="rooms-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4">Available Room Types</h4>
+
+                                <!-- Room Card -->
+                                <div class="room-card mb-4" th:each="room : ${hotel?.rooms}">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3 mb-md-0">
+                                            <img th:src="${room?.imageUrl ?: 'https://source.unsplash.com/random/300x200/?hotel-room'}" class="img-fluid rounded" alt="Room">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h5 class="mb-0" th:text="${room?.roomType ?: 'Deluxe King Room'}">Deluxe King Room</h5>
+                                                <div class="room-price">
+                                                    <span class="fs-5 fw-bold text-primary" th:text="${'$' + room?.pricePerNight ?: '$199'}">$199</span>
+                                                    <span class="text-muted small">/night</span>
+                                                </div>
+                                            </div>
+                                            <p class="mb-3" th:text="${room?.description ?: 'Spacious room with a king-sized bed, city views, and a luxurious marble bathroom. Includes free WiFi, flat-screen TV, and coffee maker.'}">
+                                                Spacious room with a king-sized bed, city views, and a luxurious marble bathroom.
+                                                Includes free WiFi, flat-screen TV, and coffee maker.
+                                            </p>
+                                            <div class="d-flex flex-wrap mb-3">
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-bed text-primary me-1"></i>
+                                                    <span>King Bed</span>
+                                                </div>
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-arrows-alt text-primary me-1"></i>
+                                                    <span>40 m²</span>
+                                                </div>
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-user-friends text-primary me-1"></i>
+                                                    <span>2 Guests</span>
+                                                </div>
+                                                <div class="room-feature mb-2">
+                                                    <i class="fas fa-mountain text-primary me-1"></i>
+                                                    <span>City View</span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                                <div class="room-amenities mb-3">
+                                                        <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-wifi me-1"></i> Free WiFi
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-snowflake me-1"></i> AC
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-tv me-1"></i> TV
+                                                        </span>
+                                                    <span class="badge bg-light text-dark">
+                                                            <i class="fas fa-bath me-1"></i> Private Bathroom
+                                                        </span>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" th:data-room-type="${room?.roomType ?: 'Deluxe King Room'}" th:data-room-price="${room?.pricePerNight ?: '199'}">
+                                                        Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sample Room Cards for Preview -->
+                                <div class="room-card mb-4">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3 mb-md-0">
+                                            <img src="https://source.unsplash.com/random/300x200/?hotel-room" class="img-fluid rounded" alt="Room">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h5 class="mb-0">Deluxe King Room</h5>
+                                                <div class="room-price">
+                                                    <span class="fs-5 fw-bold text-primary">$199</span>
+                                                    <span class="text-muted small">/night</span>
+                                                </div>
+                                            </div>
+                                            <p class="mb-3">
+                                                Spacious room with a king-sized bed, city views, and a luxurious marble bathroom.
+                                                Includes free WiFi, flat-screen TV, and coffee maker.
+                                            </p>
+                                            <div class="d-flex flex-wrap mb-3">
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-bed text-primary me-1"></i>
+                                                    <span>King Bed</span>
+                                                </div>
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-arrows-alt text-primary me-1"></i>
+                                                    <span>40 m²</span>
+                                                </div>
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-user-friends text-primary me-1"></i>
+                                                    <span>2 Guests</span>
+                                                </div>
+                                                <div class="room-feature mb-2">
+                                                    <i class="fas fa-mountain text-primary me-1"></i>
+                                                    <span>City View</span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                                <div class="room-amenities mb-3">
+                                                        <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-wifi me-1"></i> Free WiFi
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-snowflake me-1"></i> AC
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-tv me-1"></i> TV
+                                                        </span>
+                                                    <span class="badge bg-light text-dark">
+                                                            <i class="fas fa-bath me-1"></i> Private Bathroom
+                                                        </span>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" data-room-type="Deluxe King Room" data-room-price="199">
+                                                        Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="room-card mb-4">
+                                    <div class="row">
+                                        <div class="col-md-4 mb-3 mb-md-0">
+                                            <img src="https://source.unsplash.com/random/300x200/?hotel-suite" class="img-fluid rounded" alt="Room">
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h5 class="mb-0">Executive Suite</h5>
+                                                <div class="room-price">
+                                                    <span class="fs-5 fw-bold text-primary">$349</span>
+                                                    <span class="text-muted small">/night</span>
+                                                </div>
+                                            </div>
+                                            <p class="mb-3">
+                                                Elegant suite with separate living area, premium amenities, and panoramic city views.
+                                                Features a king bed, sofa bed, two TVs, and a luxurious bathroom with soaking tub.
+                                            </p>
+                                            <div class="d-flex flex-wrap mb-3">
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-bed text-primary me-1"></i>
+                                                    <span>King Bed + Sofa Bed</span>
+                                                </div>
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-arrows-alt text-primary me-1"></i>
+                                                    <span>65 m²</span>
+                                                </div>
+                                                <div class="room-feature me-4 mb-2">
+                                                    <i class="fas fa-user-friends text-primary me-1"></i>
+                                                    <span>4 Guests</span>
+                                                </div>
+                                                <div class="room-feature mb-2">
+                                                    <i class="fas fa-mountain text-primary me-1"></i>
+                                                    <span>Panoramic View</span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                                <div class="room-amenities mb-3">
+                                                        <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-wifi me-1"></i> Free WiFi
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-snowflake me-1"></i> AC
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-tv me-1"></i> 2 TVs
+                                                        </span>
+                                                    <span class="badge bg-light text-dark me-2">
+                                                            <i class="fas fa-bath me-1"></i> Soaking Tub
+                                                        </span>
+                                                    <span class="badge bg-light text-dark">
+                                                            <i class="fas fa-coffee me-1"></i> Mini Bar
+                                                        </span>
+                                                </div>
+                                                <div>
+                                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" data-room-type="Executive Suite" data-room-price="349">
+                                                        Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Amenities Tab -->
+                    <div class="tab-pane fade" id="amenities" role="tabpanel" aria-labelledby="amenities-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4">Hotel Amenities</h4>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="mb-3"><i class="fas fa-concierge-bell text-primary me-2"></i> Main Amenities</h5>
+                                        <ul class="list-unstyled amenities-list">
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>246 smoke-free guestrooms
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Daily housekeeping
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>3 restaurants and 2 bars/lounges
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Full-service spa
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Outdoor pool
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Breakfast available
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>24-hour fitness center
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Valet parking
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>24-hour business center
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Airport shuttle (surcharge)
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="mb-3"><i class="fas fa-bed text-primary me-2"></i> Room Amenities</h5>
+                                        <ul class="list-unstyled amenities-list">
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Air conditioning
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Premium bedding
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Pillow menu
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Private bathroom
+                                            </li>
+                                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Designer toiletries
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Hair dryer
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>LED TV with cable channels
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Free WiFi
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Laptop-friendly workspace
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="mb-3"><i class="fas fa-utensils text-primary me-2"></i> Food & Drink</h5>
+                                        <ul class="list-unstyled amenities-list">
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>3 restaurants
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>2 bars/lounges
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Coffee shop
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>24-hour room service
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Minibar
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Breakfast available (surcharge)
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <h5 class="mb-3"><i class="fas fa-swimming-pool text-primary me-2"></i> Recreational Amenities</h5>
+                                        <ul class="list-unstyled amenities-list">
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Full-service spa
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Outdoor pool
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>24-hour fitness center
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Sauna
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Steam room
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fas fa-check text-success me-2"></i>Yoga classes
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h4 class="mb-0">Guest Reviews</h4>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                        <i class="fas fa-edit me-2"></i>Write a Review
+                                    </button>
+                                </div>
+
+                                <!-- Rating Summary -->
+                                <div class="row mb-4">
+                                    <div class="col-md-4 mb-3 mb-md-0">
+                                        <div class="overall-rating text-center p-4 rounded bg-light">
+                                            <h2 class="display-4 fw-bold text-primary mb-0">4.5</h2>
+                                            <div class="rating-stars mb-2">
+                                                <i class="fas fa-star text-warning"></i>
+                                                <i class="fas fa-star text-warning"></i>
+                                                <i class="fas fa-star text-warning"></i>
+                                                <i class="fas fa-star text-warning"></i>
+                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                            </div>
+                                            <p class="mb-0">Based on 245 reviews</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="rating-breakdown">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="rating-label me-2">5 Stars</div>
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="rating-count small">70%</div>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="rating-label me-2">4 Stars</div>
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="rating-count small">20%</div>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="rating-label me-2">3 Stars</div>
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-info" role="progressbar" style="width: 5%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="rating-count small">5%</div>
+                                            </div>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="rating-label me-2">2 Stars</div>
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 3%;" aria-valuenow="3" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="rating-count small">3%</div>
+                                            </div>
+                                            <div class="d-flex align-items-center">
+                                                <div class="rating-label me-2">1 Star</div>
+                                                <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: 2%;" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="rating-count small">2%</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Reviews List -->
+                                <div class="reviews-list">
+                                    <!-- Review Item -->
+                                    <div class="review-item mb-4 pb-4 border-bottom" th:each="review : ${hotel?.reviews}">
+                                        <div class="d-flex mb-3">
+                                            <div class="avatar-circle me-3">
+                                                <span class="avatar-initials" th:text="${#strings.substring(review.userName, 0, 1).toUpperCase()}">J</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1" th:text="${review.userName}">John Doe</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rating-stars me-2">
+                                                        <i class="fas fa-star text-warning" th:each="i : ${#numbers.sequence(1, review.rating)}"></i>
+                                                        <i class="far fa-star text-warning" th:each="i : ${#numbers.sequence(review.rating + 1, 5)}"></i>
+                                                    </div>
+                                                    <span class="text-muted small" th:text="${review.date}">May 5, 2025</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h6 class="mb-2" th:text="${review.title}">Excellent stay, highly recommended!</h6>
+                                        <p class="mb-0" th:text="${review.comment}">
+                                            The hotel exceeded our expectations. The room was spacious and comfortable,
+                                            the staff was friendly and helpful, and the location was perfect for exploring the city.
+                                            The breakfast buffet had a great selection. We would definitely stay here again.
+                                        </p>
+                                    </div>
+
+                                    <!-- Sample Reviews for Preview -->
+                                    <div class="review-item mb-4 pb-4 border-bottom">
+                                        <div class="d-flex mb-3">
+                                            <div class="avatar-circle me-3">
+                                                <span class="avatar-initials">J</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">John Doe</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rating-stars me-2">
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                    </div>
+                                                    <span class="text-muted small">May 5, 2025</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h6 class="mb-2">Excellent stay, highly recommended!</h6>
+                                        <p class="mb-0">
+                                            The hotel exceeded our expectations. The room was spacious and comfortable,
+                                            the staff was friendly and helpful, and the location was perfect for exploring the city.
+                                            The breakfast buffet had a great selection. We would definitely stay here again.
+                                        </p>
+                                    </div>
+
+                                    <div class="review-item mb-4 pb-4 border-bottom">
+                                        <div class="d-flex mb-3">
+                                            <div class="avatar-circle me-3">
+                                                <span class="avatar-initials">M</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Maria Johnson</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rating-stars me-2">
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="far fa-star text-warning"></i>
+                                                    </div>
+                                                    <span class="text-muted small">April 28, 2025</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h6 class="mb-2">Great location and comfortable rooms</h6>
+                                        <p class="mb-0">
+                                            We had a wonderful 3-night stay at this hotel. The location is perfect, within walking
+                                            distance to many attractions. The rooms are clean and the beds are very comfortable.
+                                            The only minor issue was that the WiFi was a bit slow at times. The staff was
+                                            very responsive when we reported it.
+                                        </p>
+                                    </div>
+
+                                    <div class="review-item">
+                                        <div class="d-flex mb-3">
+                                            <div class="avatar-circle me-3">
+                                                <span class="avatar-initials">R</span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">Robert Chen</h6>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="rating-stars me-2">
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="fas fa-star text-warning"></i>
+                                                        <i class="far fa-star text-warning"></i>
+                                                        <i class="far fa-star text-warning"></i>
+                                                    </div>
+                                                    <span class="text-muted small">April 15, 2025</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <h6 class="mb-2">Decent hotel, but overpriced</h6>
+                                        <p class="mb-0">
+                                            The hotel is in a good location and the staff was friendly, but I don't think it's
+                                            worth the price they charge. The room was smaller than expected and the bathroom
+                                            could use some updates. The restaurant was excellent though, and the concierge
+                                            was very helpful with recommendations.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Pagination -->
+                                <nav aria-label="Reviews pagination" class="mt-4">
+                                    <ul class="pagination justify-content-center">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Tab -->
+                    <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-body">
+                                <h4 class="mb-4">Location & Surroundings</h4>
+
+                                <!-- Map Container -->
+                                <div class="map-container rounded mb-4" id="hotelMap"></div>
+
+                                <!-- Hotel Address -->
+                                <div class="hotel-address mb-4">
+                                    <h5 class="mb-3">Address</h5>
+                                    <p class="mb-2">
+                                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                        <span th:text="${hotel?.address ?: '123 Central Park West, New York, NY 10023, USA'}">123 Central Park West, New York, NY 10023, USA</span>
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-directions me-1"></i> Get Directions
+                                    </a>
+                                </div>
+
+                                <!-- Points of Interest -->
+                                <div class="points-of-interest">
+                                    <h5 class="mb-3">What's Nearby</h5>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-4">
+                                            <h6><i class="fas fa-map-signs text-primary me-2"></i> Attractions</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Central Park</span>
+                                                    <span class="text-muted small">0.1 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Metropolitan Museum of Art</span>
+                                                    <span class="text-muted small">0.5 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Times Square</span>
+                                                    <span class="text-muted small">1.2 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between">
+                                                    <span>Empire State Building</span>
+                                                    <span class="text-muted small">2.1 miles</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6 mb-4">
+                                            <h6><i class="fas fa-utensils text-primary me-2"></i> Restaurants</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>The Cafe (At Hotel)</span>
+                                                    <span class="text-muted small">on-site</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Le Bernardin</span>
+                                                    <span class="text-muted small">0.3 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Central Park Bistro</span>
+                                                    <span class="text-muted small">0.4 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between">
+                                                    <span>The Modern</span>
+                                                    <span class="text-muted small">0.7 miles</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6 mb-4 mb-md-0">
+                                            <h6><i class="fas fa-shopping-bag text-primary me-2"></i> Shopping</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Columbus Circle Shops</span>
+                                                    <span class="text-muted small">0.4 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>5th Avenue Shopping</span>
+                                                    <span class="text-muted small">0.6 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between">
+                                                    <span>Hudson Yards</span>
+                                                    <span class="text-muted small">1.5 miles</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6><i class="fas fa-subway text-primary me-2"></i> Transportation</h6>
+                                            <ul class="list-unstyled">
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>57th St. Subway Station</span>
+                                                    <span class="text-muted small">0.2 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between mb-2">
+                                                    <span>Columbus Circle Station</span>
+                                                    <span class="text-muted small">0.4 miles</span>
+                                                </li>
+                                                <li class="d-flex justify-content-between">
+                                                    <span>Grand Central Terminal</span>
+                                                    <span class="text-muted small">1.7 miles</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Widget -->
+            <div class="col-lg-4">
+                <div class="booking-widget card border-0 shadow-sm sticky-top" style="top: 20px;">
+                    <div class="card-body">
+                        <h4 class="mb-4">Book Your Stay</h4>
+
+                        <form th:action="@{/services/hotels/book}" method="post">
+                            <input type="hidden" name="hotelId" th:value="${hotel?.id}">
+                            <div class="mb-3">
+                                <label for="check-in-date" class="form-label">Check-in Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="check-in-date" name="checkInDate" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="check-out-date" class="form-label">Check-out Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="check-out-date" name="checkOutDate" required>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="room-type" class="form-label">Room Type</label>
+                                <select class="form-select" id="room-type" name="roomType" required>
+                                    <option value="">Select a room</option>
+                                    <option value="deluxe-king" data-price="199">Deluxe King Room - $199/night</option>
+                                    <option value="executive-suite" data-price="349">Executive Suite - $349/night</option>
+                                    <option value="family-room" data-price="259">Family Room - $259/night</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="guests" class="form-label">Guests</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user-friends"></i></span>
+                                    <select class="form-select" id="guests" name="guests" required>
+                                        <option value="1">1 Guest</option>
+                                        <option value="2" selected>2 Guests</option>
+                                        <option value="3">3 Guests</option>
+                                        <option value="4">4 Guests</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <hr class="my-4">
+
+                            <div class="price-summary mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Room Rate</span>
+                                    <span id="room-rate">$0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Number of Nights</span>
+                                    <span id="number-nights">0</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Taxes & Fees (15%)</span>
+                                    <span id="taxes-fees">$0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total</span>
+                                    <span id="total-price">$0.00</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100" id="book-now-btn" disabled>
+                                Book Now
+                            </button>
+
+                            <div class="booking-notes mt-3">
+                                <p class="mb-0 text-muted small">
+                                    <i class="fas fa-info-circle me-1"></i> Free cancellation up to 24 hours before check-in.
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Similar Hotels Section -->
+        <section class="similar-hotels mt-5">
+            <h3 class="mb-4">Similar Hotels You Might Like</h3>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card hotel-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?hotel-1" class="card-img-top" alt="Hotel">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5 class="card-title mb-0">Luxury Downtown Hotel</h5>
+                                <span class="badge bg-primary">4.3 <i class="fas fa-star"></i></span>
+                            </div>
+                            <p class="card-text text-muted small mb-3">
+                                <i class="fas fa-map-marker-alt me-1"></i> Downtown, New York
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-primary">$219</span>
+                                    <span class="text-muted small">/night</span>
+                                </div>
+                                <a href="#" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card hotel-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?hotel-2" class="card-img-top" alt="Hotel">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5 class="card-title mb-0">Riverside Suites</h5>
+                                <span class="badge bg-primary">4.6 <i class="fas fa-star"></i></span>
+                            </div>
+                            <p class="card-text text-muted small mb-3">
+                                <i class="fas fa-map-marker-alt me-1"></i> Hudson River, New York
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-primary">$189</span>
+                                    <span class="text-muted small">/night</span>
+                                </div>
+                                <a href="#" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card hotel-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?hotel-3" class="card-img-top" alt="Hotel">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <h5 class="card-title mb-0">Metropolitan Grand</h5>
+                                <span class="badge bg-primary">4.7 <i class="fas fa-star"></i></span>
+                            </div>
+                            <p class="card-text text-muted small mb-3">
+                                <i class="fas fa-map-marker-alt me-1"></i> Midtown, New York
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-primary">$289</span>
+                                        <span class="text-muted small">/night</span>
+                                </div>
+                                <a href="#" class="btn btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+<!-- Write Review Modal -->
+<div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reviewModalLabel">Write a Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/services/hotels/review}" method="post">
+                    <input type="hidden" name="hotelId" th:value="${hotel?.id}">
+                    <div class="mb-3">
+                        <label class="form-label">Your Rating</label>
+                        <div class="rating-select">
+                            <div class="rating-stars rating-input">
+                                <i class="far fa-star" data-rating="1"></i>
+                                <i class="far fa-star" data-rating="2"></i>
+                                <i class="far fa-star" data-rating="3"></i>
+                                <i class="far fa-star" data-rating="4"></i>
+                                <i class="far fa-star" data-rating="5"></i>
+                            </div>
+                            <input type="hidden" name="rating" id="rating-value" value="">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="review-title" class="form-label">Review Title</label>
+                        <input type="text" class="form-control" id="review-title" name="title" placeholder="Summarize your experience" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="review-comment" class="form-label">Your Review</label>
+                        <textarea class="form-control" id="review-comment" name="comment" rows="5" placeholder="Tell us about your stay" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="review-terms" required>
+                            <label class="form-check-label" for="review-terms">
+                                I certify that this review is based on my own experience and is my genuine opinion.
+                            </label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submit-review-btn">Submit Review</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Gallery Modal -->
+<div class="modal fade" id="galleryModal" tabindex="-1" aria-labelledby="galleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="galleryModalLabel" th:text="${hotel?.name + ' - Photo Gallery'}">Grand Plaza Hotel - Photo Gallery</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row g-3">
+                        <div class="col-md-4 col-6" th:each="image : ${hotel?.images}">
+                            <a href="#" class="gallery-item">
+                                <img th:src="${image}" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+
+                        <!-- Sample Gallery Images for Preview -->
+                        <div class="col-md-4 col-6">
+                            <a href="#" class="gallery-item">
+                                <img src="https://source.unsplash.com/random/600x400/?hotel-room" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <a href="#" class="gallery-item">
+                                <img src="https://source.unsplash.com/random/600x400/?hotel-lobby" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <a href="#" class="gallery-item">
+                                <img src="https://source.unsplash.com/random/600x400/?hotel-pool" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <a href="#" class="gallery-item">
+                                <img src="https://source.unsplash.com/random/600x400/?hotel-restaurant" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <a href="#" class="gallery-item">
+                                <img src="https://source.unsplash.com/random/600x400/?hotel-spa" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <a href="#" class="gallery-item">
+                                <img src="https://source.unsplash.com/random/600x400/?hotel-exterior" class="img-fluid rounded shadow-sm w-100" alt="Hotel Image">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Share Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shareModalLabel">Share This Hotel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-flex flex-column gap-3">
+                    <a href="#" class="btn btn-outline-primary d-flex align-items-center">
+                        <i class="fab fa-facebook-f fa-lg me-3"></i> Share on Facebook
+                    </a>
+                    <a href="#" class="btn btn-outline-info d-flex align-items-center">
+                        <i class="fab fa-twitter fa-lg me-3"></i> Share on Twitter
+                    </a>
+                    <a href="#" class="btn btn-outline-success d-flex align-items-center">
+                        <i class="fab fa-whatsapp fa-lg me-3"></i> Share on WhatsApp
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary d-flex align-items-center">
+                        <i class="far fa-envelope fa-lg me-3"></i> Share via Email
+                    </a>
+                </div>
+                <hr>
+                <div class="mt-3">
+                    <label class="form-label">Copy Link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="share-url" value="https://bezy.com/hotels/grand-plaza-hotel" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="copy-link-btn"><i class="far fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="bookingModalLabel">Complete Your Booking</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Grand Plaza Hotel</h6>
+                        <p class="text-muted small mb-3">
+                            <i class="fas fa-map-marker-alt me-1"></i> Central Park, New York
+                        </p>
+
+                        <div class="booking-details mb-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Check-in:</span>
+                                <span id="modal-check-in">May 15, 2025</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Check-out:</span>
+                                <span id="modal-check-out">May 18, 2025</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Room Type:</span>
+                                <span id="modal-room-type">Deluxe King Room</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Guests:</span>
+                                <span id="modal-guests">2 Guests</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Room Rate:</span>
+                                <span id="modal-room-rate">$199.00 per night</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Number of Nights:</span>
+                                <span id="modal-nights">3</span>
+                            </div>
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Total:</span>
+                                <span id="modal-total">$684.57</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="mb-3">Guest Information</h6>
+                        <form id="booking-form">
+                            <div class="mb-3">
+                                <label for="guest-name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="guest-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="guest-email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="guest-email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="guest-phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="guest-phone" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="special-requests" class="form-label">Special Requests</label>
+                                <textarea class="form-control" id="special-requests" rows="2"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <hr>
+
+                <h6 class="mb-3">Payment Information</h6>
+                <form id="payment-form">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="card-holder" class="form-label">Card Holder Name</label>
+                            <input type="text" class="form-control" id="card-holder" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="card-number" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="card-number" placeholder="XXXX XXXX XXXX XXXX" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="expiry-date" class="form-label">Expiry Date</label>
+                            <input type="text" class="form-control" id="expiry-date" placeholder="MM/YY" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" class="form-control" id="cvv" placeholder="XXX" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="zip-code" class="form-label">Zip Code</label>
+                            <input type="text" class="form-control" id="zip-code" required>
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="terms-agreement" required>
+                        <label class="form-check-label" for="terms-agreement">
+                            I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Cancellation Policy</a>.
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="complete-booking-btn">Complete Booking</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<!-- Map Integration -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize date pickers with minimum dates
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('check-in-date').min = today;
+        document.getElementById('check-out-date').min = today;
+
+        // Event listener for check-in date change
+        document.getElementById('check-in-date').addEventListener('change', function() {
+            document.getElementById('check-out-date').min = this.value;
+
+            // If check-out date is before check-in date, update it
+            const checkOutDate = document.getElementById('check-out-date');
+            if (checkOutDate.value && checkOutDate.value < this.value) {
+                checkOutDate.value = this.value;
+            }
+
+            calculatePrice();
+        });
+
+        // Event listener for check-out date change
+        document.getElementById('check-out-date').addEventListener('change', function() {
+            calculatePrice();
+        });
+
+        // Event listener for room type change
+        document.getElementById('room-type').addEventListener('change', function() {
+            calculatePrice();
+        });
+
+        // Calculate price based on selected dates and room type
+        function calculatePrice() {
+            const checkInDate = new Date(document.getElementById('check-in-date').value);
+            const checkOutDate = new Date(document.getElementById('check-out-date').value);
+            const roomTypeSelect = document.getElementById('room-type');
+            const bookNowBtn = document.getElementById('book-now-btn');
+
+            // Clear price if any input is missing
+            if (!checkInDate || !checkOutDate || roomTypeSelect.value === '') {
+                document.getElementById('room-rate').textContent = '$0.00';
+                document.getElementById('number-nights').textContent = '0';
+                document.getElementById('taxes-fees').textContent = '$0.00';
+                document.getElementById('total-price').textContent = '$0.00';
+                bookNowBtn.disabled = true;
+                return;
+            }
+
+            // Calculate number of nights
+            const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
+            const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            if (nights <= 0) {
+                alert('Check-out date must be after check-in date.');
+                document.getElementById('check-out-date').value = '';
+                return;
+            }
+
+            // Get room price from selected option
+            const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
+            const roomPrice = parseFloat(selectedOption.getAttribute('data-price'));
+
+            // Calculate total price
+            const subtotal = roomPrice * nights;
+            const taxesFees = subtotal * 0.15; // 15% taxes and fees
+            const total = subtotal + taxesFees;
+
+            // Update price summary
+            document.getElementById('room-rate').textContent = '$' + roomPrice.toFixed(2);
+            document.getElementById('number-nights').textContent = nights;
+            document.getElementById('taxes-fees').textContent = '$' + taxesFees.toFixed(2);
+            document.getElementById('total-price').textContent = '$' + total.toFixed(2);
+
+            // Enable book now button
+            bookNowBtn.disabled = false;
+        }
+
+        // Initialize map
+        window.initMap = function() {
+            const hotelLocation = { lat: 40.7736, lng: -73.9712 }; // Default to Grand Plaza Hotel location
+            const map = new google.maps.Map(document.getElementById('hotelMap'), {
+                center: hotelLocation,
+                zoom: 15
+            });
+
+            const marker = new google.maps.Marker({
+                position: hotelLocation,
+                map: map,
+                title: 'Grand Plaza Hotel'
+            });
+
+            // Add nearby attractions markers
+            const attractions = [
+                { name: 'Central Park', position: { lat: 40.7712, lng: -73.9739 } },
+                { name: 'Metropolitan Museum of Art', position: { lat: 40.7794, lng: -73.9632 } },
+                { name: 'Columbus Circle', position: { lat: 40.7680, lng: -73.9819 } }
+            ];
+
+            attractions.forEach(attraction => {
+                const marker = new google.maps.Marker({
+                    position: attraction.position,
+                    map: map,
+                    title: attraction.name,
+                    icon: {
+                        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    }
+                });
+            });
+        };
+
+        // Rating selection in review modal
+        const ratingStars = document.querySelectorAll('.rating-input i');
+        const ratingValue = document.getElementById('rating-value');
+
+        ratingStars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                highlightStars(rating);
+            });
+
+            star.addEventListener('mouseout', function() {
+                const currentRating = parseInt(ratingValue.value) || 0;
+                highlightStars(currentRating);
+            });
+
+            star.addEventListener('click', function() {
+                const rating = parseInt(this.getAttribute('data-rating'));
+                ratingValue.value = rating;
+                highlightStars(rating);
+            });
+        });
+
+        function highlightStars(rating) {
+            ratingStars.forEach(star => {
+                const starRating = parseInt(star.getAttribute('data-rating'));
+                if (starRating <= rating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                    star.classList.add('text-warning');
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.remove('text-warning');
+                    star.classList.add('far');
+                }
+            });
+        }
+
+        // Submit review button click
+        document.getElementById('submit-review-btn').addEventListener('click', function() {
+            const reviewForm = document.querySelector('#reviewModal form');
+            if (reviewForm.checkValidity()) {
+                // Here you would normally submit the form
+                alert('Thank you for your review!');
+                const reviewModal = bootstrap.Modal.getInstance(document.getElementById('reviewModal'));
+                reviewModal.hide();
+            } else {
+                reviewForm.reportValidity();
+            }
+        });
+
+        // Copy share link
+        document.getElementById('copy-link-btn').addEventListener('click', function() {
+            const shareUrl = document.getElementById('share-url');
+            shareUrl.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        });
+
+        // Book Now button in room card
+        const bookNowBtns = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target="#bookingModal"]');
+        bookNowBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const roomType = this.getAttribute('data-room-type');
+                const roomPrice = this.getAttribute('data-room-price');
+
+                // Set values in the booking modal
+                document.getElementById('modal-room-type').textContent = roomType;
+                document.getElementById('modal-room-rate').textContent = '$' + roomPrice + '.00 per night';
+
+                // You would typically get these values from the booking form
+                const checkInDate = new Date('2025-05-15');
+                const checkOutDate = new Date('2025-05-18');
+                const guests = 2;
+
+                document.getElementById('modal-check-in').textContent = checkInDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                document.getElementById('modal-check-out').textContent = checkOutDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+                document.getElementById('modal-guests').textContent = guests + ' Guests';
+
+                // Calculate nights and total
+                const timeDiff = checkOutDate.getTime() - checkInDate.getTime();
+                const nights = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+                document.getElementById('modal-nights').textContent = nights;
+
+                const subtotal = parseFloat(roomPrice) * nights;
+                const taxesFees = subtotal * 0.15;
+                const total = subtotal + taxesFees;
+
+                document.getElementById('modal-total').textContent = '$' + total.toFixed(2);
+            });
+        });
+
+        // Complete booking button
+        document.getElementById('complete-booking-btn').addEventListener('click', function() {
+            const bookingForm = document.getElementById('booking-form');
+            const paymentForm = document.getElementById('payment-form');
+
+            if (bookingForm.checkValidity() && paymentForm.checkValidity()) {
+                // Here you would normally process the booking
+                alert('Booking successful! A confirmation has been sent to your email.');
+                const bookingModal = bootstrap.Modal.getInstance(document.getElementById('bookingModal'));
+                bookingModal.hide();
+
+                // Redirect to confirmation page (in a real application)
+                // window.location.href = '/booking/confirmation';
+            } else {
+                // Trigger form validation
+                if (!bookingForm.checkValidity()) {
+                    bookingForm.reportValidity();
+                } else {
+                    paymentForm.reportValidity();
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    /* Custom styles for hotel detail page */
+    .timeline-item {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 20px;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+    }
+
+    .timeline-date {
+        font-size: 0.8rem;
+        color: #6c757d;
+    }
+
+    .avatar-circle {
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .avatar-initials {
+        color: white;
+        font-weight: bold;
+    }
+
+    .rating-stars i {
+        color: #e0e0e0;
+        cursor: pointer;
+    }
+
+    .rating-stars i.fas {
+        color: #ffc107;
+    }
+
+    .gallery-item {
+        display: block;
+        transition: transform 0.3s;
+    }
+
+    .gallery-item:hover {
+        transform: scale(1.02);
+    }
+
+    .room-feature {
+        font-size: 0.9rem;
+        color: var(--gray-dark);
+    }
+
+    .booking-widget {
+        border-radius: var(--radius-lg);
+    }
+
+    .booking-notes {
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 992px) {
+        .booking-widget {
+            position: static !important;
+            margin-top: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hotel-address, .points-of-interest {
+            margin-top: 1.5rem;
+        }
+    }
+</style>
+</body>
+</html>

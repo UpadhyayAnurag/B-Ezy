@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Customer Dashboard')}">
+    <title>Customer Dashboard | B-Ezy</title>
+    <!-- Additional styles for dashboard -->
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle mb-3">
+                            <span class="avatar-initials" th:text="${#strings.substring(consumer.username, 0, 1).toUpperCase()}">U</span>
+                        </div>
+                        <h5 class="mb-1" th:text="${consumer.username}">Username</h5>
+                        <p class="text-muted small mb-0" th:text="${consumer.email}">user@example.com</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="list-group list-group-flush nav-pills">
+                        <a href="#dashboard-tab" data-bs-toggle="pill" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                        </a>
+                        <a href="#bookings-tab" data-bs-toggle="pill" class="list-group-item list-group-item-action">
+                            <i class="fas fa-ticket-alt me-2"></i> My Bookings
+                        </a>
+                        <a href="#profile-tab" data-bs-toggle="pill" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user me-2"></i> Profile
+                        </a>
+                        <a href="#saved-tab" data-bs-toggle="pill" class="list-group-item list-group-item-action">
+                            <i class="fas fa-heart me-2"></i> Saved Items
+                        </a>
+                        <a href="#payment-tab" data-bs-toggle="pill" class="list-group-item list-group-item-action">
+                            <i class="fas fa-credit-card me-2"></i> Payment Methods
+                        </a>
+                        <form th:action="@{/logout}" method="post">
+                            <button type="submit" class="list-group-item list-group-item-action text-danger">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9">
+            <div class="tab-content">
+                <!-- Dashboard Tab -->
+                <div class="tab-pane fade show active" id="dashboard-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Dashboard</h4>
+                        <div>
+                            <span class="text-muted">Today: </span>
+                            <span th:text="${#dates.format(#dates.createNow(), 'dd MMM yyyy')}">11 May 2025</span>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-icon">
+                                    <i class="fas fa-ticket-alt"></i>
+                                </div>
+                                <h3 class="dashboard-stat" th:text="${bookingStats?.total ?: '0'}">5</h3>
+                                <p class="text-muted">Total Bookings</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-icon" style="background-color: rgba(0, 188, 212, 0.1); color: var(--accent);">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h3 class="dashboard-stat" style="color: var(--accent);" th:text="${bookingStats?.active ?: '0'}">2</h3>
+                                <p class="text-muted">Active Bookings</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-icon" style="background-color: rgba(76, 175, 80, 0.1); color: var(--success);">
+                                    <i class="fas fa-coins"></i>
+                                </div>
+                                <h3 class="dashboard-stat" style="color: var(--success);">
+                                    <span th:text="${'$' + #numbers.formatDecimal(totalSpent ?: 0, 1, 2)}">$0.00</span>
+                                </h3>
+                                <p class="text-muted">Total Spent</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Trips -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Upcoming Trips</h5>
+                        </div>
+                        <div class="card-body">
+                            <div th:if="${upcomingBookings != null && !upcomingBookings.empty}">
+                                <div class="list-group list-group-flush">
+                                    <div th:each="booking : ${upcomingBookings}" class="list-group-item px-0 py-3 d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="service-icon me-3">
+                                                <i th:class="${booking.serviceType == 'HOTEL' ? 'fas fa-hotel' :
+                                                                   booking.serviceType == 'FLIGHT' ? 'fas fa-plane' :
+                                                                   booking.serviceType == 'TAXI' ? 'fas fa-taxi' :
+                                                                   'fas fa-car'}"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0" th:text="${booking.serviceName}">Service Name</h6>
+                                                <p class="text-muted mb-0 small">
+                                                    <span th:text="${booking.serviceDetails}">Service Details</span>
+                                                    <span class="mx-1">•</span>
+                                                    <span th:text="${#dates.format(booking.bookingDate, 'dd MMM yyyy')}">11 May 2025</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span class="status-badge" th:classappend="${'status-' + booking.status.toLowerCase()}"
+                                              th:text="${booking.status}">CONFIRMED</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${upcomingBookings == null || upcomingBookings.empty}" class="text-center py-4">
+                                <div class="mb-3">
+                                    <i class="fas fa-calendar-alt fa-3x text-muted"></i>
+                                </div>
+                                <h6>No upcoming trips</h6>
+                                <p class="text-muted">Start planning your next adventure!</p>
+                                <a th:href="@{/}" class="btn btn-primary">Browse Services</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Recent Activity</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-primary">
+                                        <i class="fas fa-check text-white"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-0">Hotel Booking Confirmed</h6>
+                                        <p class="text-muted mb-0 small">Grand Plaza Hotel - Deluxe Room</p>
+                                        <span class="timeline-date">2 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-success">
+                                        <i class="fas fa-credit-card text-white"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-0">Payment Successful</h6>
+                                        <p class="text-muted mb-0 small">$350.00 - Hotel Booking</p>
+                                        <span class="timeline-date">2 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-info">
+                                        <i class="fas fa-search text-white"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-0">Searched for Hotels</h6>
+                                        <p class="text-muted mb-0 small">New York, NY - 2 nights</p>
+                                        <span class="timeline-date">3 days ago</span>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-marker bg-warning">
+                                        <i class="fas fa-heart text-white"></i>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <h6 class="mb-0">Saved a Hotel</h6>
+                                        <p class="text-muted mb-0 small">Luxury Suite at Ocean View Resort</p>
+                                        <span class="timeline-date">5 days ago</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recommended For You -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Recommended For You</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <img src="https://source.unsplash.com/featured/?hotel" class="card-img-top" alt="Hotel">
+                                        <div class="card-body">
+                                            <span class="service-badge service-badge-hotel mb-2">Hotel</span>
+                                            <h6 class="card-title">Sunset Beach Resort</h6>
+                                            <p class="card-text small">Beachfront luxury with stunning ocean views.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fw-bold">$199/night</span>
+                                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <img src="https://source.unsplash.com/featured/?flight" class="card-img-top" alt="Flight">
+                                        <div class="card-body">
+                                            <span class="service-badge service-badge-flight mb-2">Flight</span>
+                                            <h6 class="card-title">New York to London</h6>
+                                            <p class="card-text small">Direct flights with premium airlines.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fw-bold">$450</span>
+                                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <img src="https://source.unsplash.com/featured/?car" class="card-img-top" alt="Car">
+                                        <div class="card-body">
+                                            <span class="service-badge service-badge-car mb-2">Car Rental</span>
+                                            <h6 class="card-title">Premium SUV</h6>
+                                            <p class="card-text small">Luxury vehicles for your next road trip.</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fw-bold">$75/day</span>
+                                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Bookings Tab -->
+                <div class="tab-pane fade" id="bookings-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">My Bookings</h4>
+                        <div class="d-flex">
+                            <div class="dropdown me-2">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-filter me-1"></i> Filter
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="filterDropdown">
+                                    <li><a class="dropdown-item" href="#">All Bookings</a></li>
+                                    <li><a class="dropdown-item" href="#">Upcoming</a></li>
+                                    <li><a class="dropdown-item" href="#">Completed</a></li>
+                                    <li><a class="dropdown-item" href="#">Cancelled</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-sort me-1"></i> Sort
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+                                    <li><a class="dropdown-item" href="#">Date (Newest)</a></li>
+                                    <li><a class="dropdown-item" href="#">Date (Oldest)</a></li>
+                                    <li><a class="dropdown-item" href="#">Price (High to Low)</a></li>
+                                    <li><a class="dropdown-item" href="#">Price (Low to High)</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table booking-table mb-0">
+                                    <thead>
+                                    <tr>
+                                        <th>Service</th>
+                                        <th>Details</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="booking : ${allBookings}" th:if="${allBookings != null && !allBookings.empty}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="service-icon me-2">
+                                                    <i th:class="${booking.serviceType == 'HOTEL' ? 'fas fa-hotel' :
+                                                                          booking.serviceType == 'FLIGHT' ? 'fas fa-plane' :
+                                                                          booking.serviceType == 'TAXI' ? 'fas fa-taxi' :
+                                                                          'fas fa-car'}"></i>
+                                                </div>
+                                                <span th:text="${booking.serviceType}">HOTEL</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-0" th:text="${booking.serviceName}">Grand Plaza Hotel</h6>
+                                                <p class="text-muted mb-0 small" th:text="${booking.serviceDetails}">Deluxe Room, 2 Adults</p>
+                                            </div>
+                                        </td>
+                                        <td th:text="${#dates.format(booking.bookingDate, 'dd MMM yyyy')}">11 May 2025</td>
+                                        <td th:text="${'$' + booking.amount}">$350.00</td>
+                                        <td>
+                                                    <span class="status-badge" th:classappend="${'status-' + booking.status.toLowerCase()}"
+                                                          th:text="${booking.status}">CONFIRMED</span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i> View Details</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-receipt me-2"></i> View Invoice</a></li>
+                                                    <li th:if="${booking.status == 'PENDING' || booking.status == 'CONFIRMED'}">
+                                                        <a class="dropdown-item text-danger" href="#"><i class="fas fa-times-circle me-2"></i> Cancel Booking</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!-- Sample data for preview -->
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="service-icon me-2">
+                                                    <i class="fas fa-hotel"></i>
+                                                </div>
+                                                <span>HOTEL</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-0">Grand Plaza Hotel</h6>
+                                                <p class="text-muted mb-0 small">Deluxe Room, 2 Adults</p>
+                                            </div>
+                                        </td>
+                                        <td>15 May 2025</td>
+                                        <td>$350.00</td>
+                                        <td>
+                                            <span class="status-badge status-confirmed">CONFIRMED</span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i> View Details</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-receipt me-2"></i> View Invoice</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-times-circle me-2"></i> Cancel Booking</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="service-icon me-2">
+                                                    <i class="fas fa-plane"></i>
+                                                </div>
+                                                <span>FLIGHT</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-0">JFK to LHR</h6>
+                                                <p class="text-muted mb-0 small">Economy, 1 Adult</p>
+                                            </div>
+                                        </td>
+                                        <td>20 May 2025</td>
+                                        <td>$450.00</td>
+                                        <td>
+                                            <span class="status-badge status-pending">PENDING</span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i> View Details</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-receipt me-2"></i> View Invoice</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-times-circle me-2"></i> Cancel Booking</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="service-icon me-2">
+                                                    <i class="fas fa-car"></i>
+                                                </div>
+                                                <span>CAR</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-0">Premium SUV</h6>
+                                                <p class="text-muted mb-0 small">7 days rental</p>
+                                            </div>
+                                        </td>
+                                        <td>30 Apr 2025</td>
+                                        <td>$525.00</td>
+                                        <td>
+                                            <span class="status-badge status-cancelled">CANCELLED</span>
+                                        </td>
+                                        <td>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i> View Details</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-receipt me-2"></i> View Invoice</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav aria-label="Bookings pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Profile Tab -->
+                <div class="tab-pane fade" id="profile-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">My Profile</h4>
+                        <button class="btn btn-primary" id="edit-profile-btn">
+                            <i class="fas fa-edit me-2"></i> Edit Profile
+                        </button>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body">
+                            <form id="profile-form" th:action="@{/api/consumers/update}" method="post" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="username" class="form-label">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username"
+                                               th:value="${consumer?.username}" placeholder="Username"
+                                               disabled required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email"
+                                               th:value="${consumer?.email}" placeholder="Email"
+                                               disabled required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber"
+                                               th:value="${consumer?.phoneNumber}" placeholder="Phone Number"
+                                               disabled required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fullName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="fullName" name="fullName"
+                                               th:value="${consumer?.fullName}" placeholder="Full Name"
+                                               disabled>
+                                    </div>
+                                </div>
+
+                                <div class="row profile-edit-controls" style="display: none;">
+                                    <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+                                        <button type="button" class="btn btn-outline-secondary" id="cancel-edit-btn">Cancel</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Change Password</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/api/consumers/change-password}" method="post" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="current-password" class="form-label">Current Password</label>
+                                        <input type="password" class="form-control" id="current-password" name="currentPassword"
+                                               placeholder="Enter current password" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="new-password" class="form-label">New Password</label>
+                                        <input type="password" class="form-control" id="new-password" name="newPassword"
+                                               placeholder="Enter new password" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="confirm-new-password" class="form-label">Confirm New Password</label>
+                                        <input type="password" class="form-control" id="confirm-new-password" name="confirmNewPassword"
+                                               placeholder="Confirm new password" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Update Password</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Preferences</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/api/consumers/preferences}" method="post">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Communication Preferences</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="email-notifications" name="emailNotifications" checked>
+                                            <label class="form-check-label" for="email-notifications">
+                                                Email Notifications
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="sms-notifications" name="smsNotifications" checked>
+                                            <label class="form-check-label" for="sms-notifications">
+                                                SMS Notifications
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" id="marketing-emails" name="marketingEmails">
+                                            <label class="form-check-label" for="marketing-emails">
+                                                Marketing Emails
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="mb-3">Travel Preferences</h6>
+                                        <div class="mb-3">
+                                            <label for="preferred-language" class="form-label">Preferred Language</label>
+                                            <select class="form-select" id="preferred-language" name="preferredLanguage">
+                                                <option value="en" selected>English</option>
+                                                <option value="es">Spanish</option>
+                                                <option value="fr">French</option>
+                                                <option value="de">German</option>
+                                                <option value="zh">Chinese</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="currency" class="form-label">Preferred Currency</label>
+                                            <select class="form-select" id="currency" name="currency">
+                                                <option value="USD" selected>USD ($)</option>
+                                                <option value="EUR">EUR (€)</option>
+                                                <option value="GBP">GBP (£)</option>
+                                                <option value="JPY">JPY (¥)</option>
+                                                <option value="CAD">CAD ($)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saved Items Tab -->
+                <div class="tab-pane fade" id="saved-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Saved Items</h4>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="savedFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-filter me-1"></i> Filter
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="savedFilterDropdown">
+                                <li><a class="dropdown-item" href="#">All Items</a></li>
+                                <li><a class="dropdown-item" href="#">Hotels</a></li>
+                                <li><a class="dropdown-item" href="#">Flights</a></li>
+                                <li><a class="dropdown-item" href="#">Car Rentals</a></li>
+                                <li><a class="dropdown-item" href="#">Taxis</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <!-- Saved Hotel -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="position-relative">
+                                    <img src="https://source.unsplash.com/random/600x400/?hotel" class="card-img-top" alt="Hotel">
+                                    <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-2 rounded-circle">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                    <span class="service-badge service-badge-hotel position-absolute bottom-0 start-0 m-2">Hotel</span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Grand Plaza Hotel</h5>
+                                    <p class="card-text small">Luxury 5-star hotel in downtown with rooftop pool and spa.</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="fw-bold">$250/night</span>
+                                        <a href="#" class="btn btn-sm btn-primary">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Saved Flight -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="position-relative">
+                                    <img src="https://source.unsplash.com/random/600x400/?airplane" class="card-img-top" alt="Flight">
+                                    <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-2 rounded-circle">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                    <span class="service-badge service-badge-flight position-absolute bottom-0 start-0 m-2">Flight</span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">NYC to Paris</h5>
+                                    <p class="card-text small">Non-stop flight, 7h 30m, Departing JFK at 7:30 PM.</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="fw-bold">$650</span>
+                                        <a href="#" class="btn btn-sm btn-primary">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Saved Car Rental -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm">
+                                <div class="position-relative">
+                                    <img src="https://source.unsplash.com/random/600x400/?car" class="card-img-top" alt="Car">
+                                    <button class="btn btn-sm btn-light position-absolute top-0 end-0 m-2 rounded-circle">
+                                        <i class="fas fa-heart text-danger"></i>
+                                    </button>
+                                    <span class="service-badge service-badge-car position-absolute bottom-0 start-0 m-2">Car Rental</span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">Premium SUV</h5>
+                                    <p class="card-text small">Luxury SUV with GPS, Bluetooth, and unlimited mileage.</p>
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <span class="fw-bold">$85/day</span>
+                                        <a href="#" class="btn btn-sm btn-primary">Book Now</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods Tab -->
+                <div class="tab-pane fade" id="payment-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0">Payment Methods</h4>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
+                            <i class="fas fa-plus me-2"></i> Add Payment Method
+                        </button>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <!-- Credit Card -->
+                                <div class="list-group-item p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="fab fa-cc-visa fa-2x text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Visa ending in 4567</h6>
+                                                <p class="text-muted mb-0 small">Expires 09/2026</p>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <span class="badge bg-success me-2">Default</span>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Actions
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i> Remove</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Credit Card -->
+                                <div class="list-group-item p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="fab fa-cc-mastercard fa-2x text-warning"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">Mastercard ending in 8901</h6>
+                                                <p class="text-muted mb-0 small">Expires 12/2025</p>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-check me-2"></i> Set as Default</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i> Remove</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- PayPal -->
+                                <div class="list-group-item p-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="me-3">
+                                                <i class="fab fa-paypal fa-2x text-info"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">PayPal</h6>
+                                                <p class="text-muted mb-0 small">user@example.com</p>
+                                            </div>
+                                        </div>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Actions
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-check me-2"></i> Set as Default</a></li>
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash-alt me-2"></i> Remove</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h5 class="mb-0">Billing Address</h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/api/consumers/billing-address}" method="post" class="needs-validation" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="address-line1" class="form-label">Address Line 1</label>
+                                        <input type="text" class="form-control" id="address-line1" name="addressLine1"
+                                               value="123 Main St" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="address-line2" class="form-label">Address Line 2</label>
+                                        <input type="text" class="form-control" id="address-line2" name="addressLine2"
+                                               value="Apt 4B">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="city" class="form-label">City</label>
+                                        <input type="text" class="form-control" id="city" name="city"
+                                               value="New York" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="state" class="form-label">State/Province</label>
+                                        <input type="text" class="form-control" id="state" name="state"
+                                               value="NY" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="zipCode" class="form-label">Postal/Zip Code</label>
+                                        <input type="text" class="form-control" id="zipCode" name="zipCode"
+                                               value="10001" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="country" class="form-label">Country</label>
+                                        <select class="form-select" id="country" name="country" required>
+                                            <option value="US" selected>United States</option>
+                                            <option value="CA">Canada</option>
+                                            <option value="UK">United Kingdom</option>
+                                            <option value="AU">Australia</option>
+                                            <option value="IN">India</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary">Update Billing Address</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Payment Method Modal -->
+<div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPaymentModalLabel">Add Payment Method</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="nav nav-tabs mb-4" id="paymentMethodTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="credit-card-tab" data-bs-toggle="tab" data-bs-target="#credit-card" type="button" role="tab" aria-controls="credit-card" aria-selected="true">
+                            <i class="fas fa-credit-card me-2"></i>Credit Card
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="paypal-tab" data-bs-toggle="tab" data-bs-target="#paypal" type="button" role="tab" aria-controls="paypal" aria-selected="false">
+                            <i class="fab fa-paypal me-2"></i>PayPal
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="paymentMethodTabContent">
+                    <!-- Credit Card Form -->
+                    <div class="tab-pane fade show active" id="credit-card" role="tabpanel" aria-labelledby="credit-card-tab">
+                        <form class="needs-validation" novalidate>
+                            <div class="row g-3">
+                                <div class="col-12 mb-3">
+                                    <label for="card-number" class="form-label">Card Number</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
+                                        <input type="text" class="form-control" id="card-number" placeholder="XXXX XXXX XXXX XXXX" required>
+                                        <div class="invalid-feedback">
+                                            Please enter a valid card number.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="card-name" class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-control" id="card-name" placeholder="Name on card" required>
+                                    <div class="invalid-feedback">
+                                        Please enter the cardholder name.
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="expiry-date" class="form-label">Expiry Date</label>
+                                    <input type="text" class="form-control" id="expiry-date" placeholder="MM/YY" required>
+                                    <div class="invalid-feedback">
+                                        Please enter the expiry date.
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="cvv" class="form-label">CVV</label>
+                                    <input type="text" class="form-control" id="cvv" placeholder="XXX" required>
+                                    <div class="invalid-feedback">
+                                        Please enter the CVV code.
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="save-card">
+                                        <label class="form-check-label" for="save-card">
+                                            Set as default payment method
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- PayPal Form -->
+                    <div class="tab-pane fade" id="paypal" role="tabpanel" aria-labelledby="paypal-tab">
+                        <div class="text-center py-4">
+                            <i class="fab fa-paypal fa-4x text-info mb-3"></i>
+                            <h5>Connect with PayPal</h5>
+                            <p class="mb-4">You will be redirected to PayPal to link your account</p>
+                            <button class="btn btn-primary btn-lg px-4">
+                                <i class="fab fa-paypal me-2"></i> Connect PayPal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Add Payment Method</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<!-- Dashboard specific scripts -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Profile edit functionality
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
+        const profileForm = document.getElementById('profile-form');
+        const profileEditControls = document.querySelector('.profile-edit-controls');
+        const profileInputs = profileForm.querySelectorAll('input');
+
+        if (editProfileBtn) {
+            editProfileBtn.addEventListener('click', function() {
+                profileInputs.forEach(input => {
+                    input.disabled = false;
+                });
+                profileEditControls.style.display = 'flex';
+                editProfileBtn.style.display = 'none';
+            });
+        }
+
+        if (cancelEditBtn) {
+            cancelEditBtn.addEventListener('click', function() {
+                profileInputs.forEach(input => {
+                    input.disabled = true;
+                });
+                profileEditControls.style.display = 'none';
+                editProfileBtn.style.display = 'block';
+            });
+        }
+
+        // Form validation
+        const forms = document.querySelectorAll('.needs-validation');
+
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+
+        // Credit card input formatting
+        const cardNumberInput = document.getElementById('card-number');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 16) value = value.slice(0, 16);
+
+                let formattedValue = '';
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+
+                e.target.value = formattedValue;
+            });
+        }
+
+        const expiryDateInput = document.getElementById('expiry-date');
+        if (expiryDateInput) {
+            expiryDateInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 4) value = value.slice(0, 4);
+
+                if (value.length > 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2);
+                }
+
+                e.target.value = value;
+            });
+        }
+    });
+</script>
+</body>
+</html>

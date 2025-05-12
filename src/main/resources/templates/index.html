@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Home')}">
+    <title>Home | B-Ezy</title>
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<!-- Hero Section -->
+<section class="hero py-5" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://source.unsplash.com/1600x900/?travel') no-repeat center center; background-size: cover;">
+    <div class="container py-5">
+        <div class="row py-5">
+            <div class="col-lg-7 text-white py-5">
+                <h1 class="display-4 fw-bold mb-4">Your Journey Begins with B-Ezy</h1>
+                <p class="lead mb-4">Find and book the perfect hotels, flights, taxis, and car rentals for your next adventure.</p>
+                <a href="#services" class="btn btn-lg btn-cta me-3">Explore Services</a>
+                <a th:href="@{/register/consumer}" class="btn btn-lg btn-outline-light">Sign Up</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section py-5">
+    <div class="container">
+        <div class="search-box">
+            <ul class="nav nav-tabs" id="serviceTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="hotel-tab" data-bs-toggle="tab" data-bs-target="#hotel-search" type="button" role="tab" aria-controls="hotel-search" aria-selected="true">
+                        <i class="fas fa-hotel me-2"></i>Hotels
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="flight-tab" data-bs-toggle="tab" data-bs-target="#flight-search" type="button" role="tab" aria-controls="flight-search" aria-selected="false">
+                        <i class="fas fa-plane me-2"></i>Flights
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="taxi-tab" data-bs-toggle="tab" data-bs-target="#taxi-search" type="button" role="tab" aria-controls="taxi-search" aria-selected="false">
+                        <i class="fas fa-taxi me-2"></i>Taxis
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="car-tab" data-bs-toggle="tab" data-bs-target="#car-search" type="button" role="tab" aria-controls="car-search" aria-selected="false">
+                        <i class="fas fa-car me-2"></i>Car Rentals
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content p-4" id="serviceTabContent">
+                <!-- Hotel Search -->
+                <div class="tab-pane fade show active" id="hotel-search" role="tabpanel" aria-labelledby="hotel-tab">
+                    <form th:action="@{/services/hotels/search}" method="get">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="location" class="form-label">Destination</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input type="text" class="form-control" id="location" name="location" placeholder="Where are you going?">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="check-in" class="form-label">Check In</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="check-in" name="checkIn">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="check-out" class="form-label">Check Out</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="check-out" name="checkOut">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="guests" class="form-label">Guests</label>
+                                <select class="form-select" id="guests" name="guests">
+                                    <option value="1">1 Guest</option>
+                                    <option value="2">2 Guests</option>
+                                    <option value="3">3 Guests</option>
+                                    <option value="4">4 Guests</option>
+                                    <option value="5">5+ Guests</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-cta"><i class="fas fa-search me-2"></i>Search Hotels</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Flight Search -->
+                <div class="tab-pane fade" id="flight-search" role="tabpanel" aria-labelledby="flight-tab">
+                    <form th:action="@{/services/flights/search}" method="get">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="departure-city" class="form-label">From</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-plane-departure"></i></span>
+                                    <input type="text" class="form-control" id="departure-city" name="departure" placeholder="Departure City">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="destination-city" class="form-label">To</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-plane-arrival"></i></span>
+                                    <input type="text" class="form-control" id="destination-city" name="destination" placeholder="Destination City">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="departure-date" class="form-label">Departure Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="departure-date" name="departureDate">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="passengers" class="form-label">Passengers</label>
+                                <select class="form-select" id="passengers" name="passengers">
+                                    <option value="1">1 Passenger</option>
+                                    <option value="2">2 Passengers</option>
+                                    <option value="3">3 Passengers</option>
+                                    <option value="4">4+ Passengers</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-cta"><i class="fas fa-search me-2"></i>Search Flights</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Taxi Search -->
+                <div class="tab-pane fade" id="taxi-search" role="tabpanel" aria-labelledby="taxi-tab">
+                    <form th:action="@{/services/taxis/search}" method="get">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="pickup-location" class="form-label">Pickup Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input type="text" class="form-control" id="pickup-location" name="pickupLocation" placeholder="Enter pickup address">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="dropoff-location" class="form-label">Dropoff Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input type="text" class="form-control" id="dropoff-location" name="dropoffLocation" placeholder="Enter destination address">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="pickup-time" class="form-label">Pickup Time</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                    <input type="datetime-local" class="form-control" id="pickup-time" name="pickupTime">
+                                </div>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="button" class="btn btn-outline-primary me-2"><i class="fas fa-location-arrow me-2"></i>Use Current Location</button>
+                                <button type="submit" class="btn btn-cta"><i class="fas fa-search me-2"></i>Find Taxis</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Car Rental Search -->
+                <div class="tab-pane fade" id="car-search" role="tabpanel" aria-labelledby="car-tab">
+                    <form th:action="@{/services/car-rentals/search}" method="get">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="pickup-location-car" class="form-label">Pickup Location</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                    <input type="text" class="form-control" id="pickup-location-car" name="pickupLocation" placeholder="City, Airport, etc.">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="pickup-date" class="form-label">Pickup Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="pickup-date" name="pickupDate">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="return-date" class="form-label">Return Date</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="date" class="form-control" id="return-date" name="returnDate">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="car-type" class="form-label">Car Type</label>
+                                <select class="form-select" id="car-type" name="carType">
+                                    <option value="">Any Type</option>
+                                    <option value="economy">Economy</option>
+                                    <option value="compact">Compact</option>
+                                    <option value="midsize">Midsize</option>
+                                    <option value="luxury">Luxury</option>
+                                    <option value="suv">SUV</option>
+                                </select>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-cta"><i class="fas fa-search me-2"></i>Search Cars</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Our Services</h2>
+            <p class="lead text-muted">Everything you need for your perfect trip</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Hotel Service -->
+            <div class="col-md-6 col-lg-3">
+                <div class="service-card">
+                    <img th:src="@{/images/services/Hotel_B-Ezy.jpeg}" class="card-img-top" alt="Hotel">
+                    <div class="card-body">
+                        <span class="service-badge service-badge-hotel mb-2">Hotels</span>
+                        <h5 class="card-title">Find Perfect Accommodations</h5>
+                        <p class="card-text">Discover and book the best hotels, resorts, and vacation rentals worldwide.</p>
+                        <a th:href="@{/services/hotels}" class="btn btn-outline-primary">Browse Hotels</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Service -->
+            <div class="col-md-6 col-lg-3">
+                <div class="service-card">
+                    <img th:src="@{/images/services/Flight_B-Ezy.jpeg}" class="card-img-top" alt="Flight">
+                    <div class="card-body">
+                        <span class="service-badge service-badge-flight mb-2">Flights</span>
+                        <h5 class="card-title">Book Flights Worldwide</h5>
+                        <p class="card-text">Compare and book flights from hundreds of airlines at competitive prices.</p>
+                        <a th:href="@{/services/flights}" class="btn btn-outline-primary">Find Flights</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taxi Service -->
+            <div class="col-md-6 col-lg-3">
+                <div class="service-card">
+                    <img th:src="@{/images/services/Taxi_B-Ezy.jpeg}" class="card-img-top" alt="Taxi">
+                    <div class="card-body">
+                        <span class="service-badge service-badge-taxi mb-2">Taxis</span>
+                        <h5 class="card-title">Get Around Easily</h5>
+                        <p class="card-text">Book on-demand taxis for immediate pickup or schedule in advance.</p>
+                        <a th:href="@{/services/taxis}" class="btn btn-outline-primary">Book Taxis</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Car Rental Service -->
+            <div class="col-md-6 col-lg-3">
+                <div class="service-card">
+                    <img th:src="@{/images/services/Car-Rental_B-Ezy.jpeg}" class="card-img-top" alt="Car Rental">
+                    <div class="card-body">
+                        <span class="service-badge service-badge-car mb-2">Car Rentals</span>
+                        <h5 class="card-title">Drive On Your Terms</h5>
+                        <p class="card-text">Rent cars of all types for any duration, with flexible pickup and return.</p>
+                        <a th:href="@{/services/car-rentals}" class="btn btn-outline-primary">Rent Cars</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">How B-Ezy Works</h2>
+            <p class="lead text-muted">Simple steps to book your perfect trip</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background-color: rgba(25, 118, 210, 0.1);">
+                        <i class="fas fa-search fa-3x text-primary"></i>
+                    </div>
+                    <h4>Search & Compare</h4>
+                    <p>Browse through our extensive selection of travel services and compare options.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background-color: rgba(0, 188, 212, 0.1);">
+                        <i class="fas fa-check-circle fa-3x" style="color: var(--accent)"></i>
+                    </div>
+                    <h4>Book Easily</h4>
+                    <p>Select your preferred options and complete your booking in just a few clicks.</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="mb-4 d-inline-block p-3 rounded-circle" style="background-color: rgba(255, 152, 0, 0.1);">
+                        <i class="fas fa-suitcase fa-3x" style="color: var(--cta)"></i>
+                    </div>
+                    <h4>Enjoy Your Trip</h4>
+                    <p>Receive immediate confirmation and get ready for an amazing journey.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Destinations -->
+<section class="py-5">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold mb-0">Featured Destinations</h2>
+            <a th:href="@{/destinations}" class="btn btn-outline-primary">View All</a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden">
+                    <img th:src="@{/images/destinations/Paris_B-Ezy.jpeg}" class="card-img-top" alt="Paris">
+                    <div class="card-body">
+                        <h5 class="card-title">Paris, France</h5>
+                        <p class="card-text">Experience the city of love with its iconic Eiffel Tower and world-class cuisine.</p>
+                        <a th:href="@{/images/destinations/Paris_B-Ezy.jpeg}" class="btn btn-sm btn-outline-primary">Explore</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden">
+                    <img th:src="@{/images/destinations/Tokyo_B-Ezy.jpeg}" class="card-img-top" alt="Tokyo">
+                    <div class="card-body">
+                        <h5 class="card-title">Tokyo, Japan</h5>
+                        <p class="card-text">Discover the perfect blend of traditional culture and futuristic technology.</p>
+                        <a th:href="@{/destinations/tokyo}" class="btn btn-sm btn-outline-primary">Explore</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-lg overflow-hidden">
+                    <img th:src="@{/images/destinations/New-York_B-Ezy.jpeg}" class="card-img-top" alt="New York">
+                    <div class="card-body">
+                        <h5 class="card-title">New York, USA</h5>
+                        <p class="card-text">Visit the city that never sleeps with its iconic skyline and diverse neighborhoods.</p>
+                        <a th:href="@{/destinations/new-york}" class="btn btn-sm btn-outline-primary">Explore</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">What Our Customers Say</h2>
+            <p class="lead text-muted">Thousands of travelers trust B-Ezy for their booking needs</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="card-text mb-4">"B-Ezy made booking my family vacation so simple! Found a great hotel and rental car in minutes. Will definitely use again for our next trip."</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle overflow-hidden me-3" style="width: 50px; height: 50px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Harsh Kasana</h6>
+                                <small class="text-muted">Family Traveler</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="card-text mb-4">"As a business traveler, I need reliability and efficiency. B-Ezy delivers both. Their flight booking system is quick and the taxi service is always on time."</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle overflow-hidden me-3" style="width: 50px; height: 50px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Michael Chen</h6>
+                                <small class="text-muted">Business Traveler</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <div class="text-warning">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                        <p class="card-text mb-4">"I found an amazing last-minute hotel deal on B-Ezy that saved our weekend getaway. The mobile app is super easy to use even when on the go!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle overflow-hidden me-3" style="width: 50px; height: 50px; background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user text-primary"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Elena Rodriguez</h6>
+                                <small class="text-muted">Weekend Explorer</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- App Download -->
+<section class="py-5 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-7">
+                <h2 class="fw-bold mb-4">Download the B-Ezy App</h2>
+                <p class="lead mb-4">Get exclusive mobile deals and manage your bookings on the go!</p>
+                <div class="d-flex flex-wrap">
+                    <a href="#" class="btn btn-light me-3 mb-3 mb-md-0">
+                        <i class="fab fa-apple me-2"></i> App Store
+                    </a>
+                    <a href="#" class="btn btn-light">
+                        <i class="fab fa-google-play me-2"></i> Google Play
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-5 text-center">
+                <img th:src="@{/images/mobile-app-mockup.png}" alt="Mobile App" class="img-fluid" style="max-height: 400px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 text-center">
+                <h2 class="fw-bold mb-3">Subscribe to Our Newsletter</h2>
+                <p class="lead mb-4">Get travel tips, exclusive deals, and inspiration for your next adventure.</p>
+                <form class="row g-3 justify-content-center">
+                    <div class="col-md-8">
+                        <input type="email" class="form-control form-control-lg" placeholder="Your email address">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-cta btn-lg w-100">Subscribe</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<!-- Initialize date pickers and other functionality -->
+<script>
+    // Set minimum date for date pickers to today
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('check-in').min = today;
+    document.getElementById('check-out').min = today;
+    document.getElementById('departure-date').min = today;
+    document.getElementById('pickup-date').min = today;
+    document.getElementById('return-date').min = today;
+
+    // Add event listener to ensure check-out is after check-in
+    document.getElementById('check-in').addEventListener('change', function() {
+        document.getElementById('check-out').min = this.value;
+    });
+
+    // Add event listener to ensure return date is after pickup date
+    document.getElementById('pickup-date').addEventListener('change', function() {
+        document.getElementById('return-date').min = this.value;
+    });
+</script>
+</body>
+</html>

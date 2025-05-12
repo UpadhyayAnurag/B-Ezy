@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' | B-Ezy - Travel Made Easy'">B-Ezy</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+    <!-- Page specific CSS if needed -->
+    <th:block th:replace="${links} ?: ~{}"></th:block>
+</head>
+
+<body>
+<!-- Navigation bar -->
+<header th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light navbar-bezy sticky-top">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/images/Logo_B-Ezy.jpeg}" alt="B-Ezy Logo" height="40">
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Services
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li><a class="dropdown-item" th:href="@{/services/hotels}">Hotels</a></li>
+                            <li><a class="dropdown-item" th:href="@{/services/flights}">Flights</a></li>
+                            <li><a class="dropdown-item" th:href="@{/services/taxis}">Taxis</a></li>
+                            <li><a class="dropdown-item" th:href="@{/services/car-rentals}">Car Rentals</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/about}">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/contact}">Contact</a>
+                    </li>
+                </ul>
+
+                <!-- User is not authenticated -->
+                <div class="d-flex" th:if="${#authentication == null || !#authentication.isAuthenticated()}">
+                    <a th:href="@{/login}" class="btn btn-outline-primary me-2">Login</a>
+                    <div class="dropdown">
+                        <button class="btn btn-primary dropdown-toggle" type="button" id="registerDropdown"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                            Register
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="registerDropdown">
+                            <li><a class="dropdown-item" th:href="@{/register/consumer}">As Customer</a></li>
+                            <li><a class="dropdown-item" th:href="@{/register/provider}">As Service Provider</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- User is authenticated -->
+                <div class="d-flex align-items-center" th:if="${#authentication != null && #authentication.isAuthenticated()}">
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" type="button"
+                                id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="me-2" th:text="${#authentication.name}">Username</span>
+                            <i class="fas fa-user-circle fa-lg"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/dashboard}">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/profile}">
+                                    <i class="fas fa-user me-2"></i> My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" th:href="@{/bookings}">
+                                    <i class="fas fa-ticket-alt me-2"></i> My Bookings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button class="dropdown-item" type="submit">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+</body>
+</html>

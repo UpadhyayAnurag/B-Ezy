@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Hotels')}">
+    <title>Hotels | B-Ezy</title>
+    <!-- Additional styles -->
+    <link rel="stylesheet" th:href="@{/css/services.css}">
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<!-- Hero Section -->
+<section class="hero py-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/1600x900/?hotel') no-repeat center center; background-size: cover;">
+    <div class="container py-5">
+        <div class="row py-4">
+            <div class="col-lg-8">
+                <h1 class="display-4 text-white fw-bold mb-3">Find the Perfect Hotel</h1>
+                <p class="lead text-white mb-0">Discover and book accommodations for your next adventure</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section py-5 bg-light">
+    <div class="container">
+        <div class="search-box">
+            <form th:action="@{/services/hotels/search}" method="get">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="location" class="form-label">Destination</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <input type="text" class="form-control" id="location" name="location"
+                                   th:value="${param.location}" placeholder="Where are you going?">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="check-in" class="form-label">Check In</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="date" class="form-control" id="check-in" name="checkIn"
+                                   th:value="${param.checkIn}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="check-out" class="form-label">Check Out</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="date" class="form-control" id="check-out" name="checkOut"
+                                   th:value="${param.checkOut}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="guests" class="form-label">Guests</label>
+                        <select class="form-select" id="guests" name="guests">
+                            <option value="1" th:selected="${param.guests == '1'}">1 Guest</option>
+                            <option value="2" th:selected="${param.guests == '2'}">2 Guests</option>
+                            <option value="3" th:selected="${param.guests == '3'}">3 Guests</option>
+                            <option value="4" th:selected="${param.guests == '4'}">4 Guests</option>
+                            <option value="5" th:selected="${param.guests == '5'}">5+ Guests</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Search Hotels
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Advanced Search (Collapsible) -->
+                <div class="mt-3">
+                    <a class="text-decoration-none" data-bs-toggle="collapse" href="#advancedSearch"
+                       role="button" aria-expanded="false" aria-controls="advancedSearch">
+                        <i class="fas fa-sliders-h me-1"></i> Advanced Search Options
+                    </a>
+
+                    <div class="collapse mt-3" id="advancedSearch">
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label for="priceMin" class="form-label">Min Price Per Night</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="priceMin" name="priceMin"
+                                           th:value="${param.priceMin}" min="0" placeholder="Min">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="priceMax" class="form-label">Max Price Per Night</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="priceMax" name="priceMax"
+                                           th:value="${param.priceMax}" min="0" placeholder="Max">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="rating" class="form-label">Min Rating</label>
+                                <select class="form-select" id="rating" name="rating">
+                                    <option value="">Any Rating</option>
+                                    <option value="3" th:selected="${param.rating == '3'}">3+ Stars</option>
+                                    <option value="4" th:selected="${param.rating == '4'}">4+ Stars</option>
+                                    <option value="5" th:selected="${param.rating == '5'}">5 Stars</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="roomType" class="form-label">Room Type</label>
+                                <select class="form-select" id="roomType" name="roomType">
+                                    <option value="">Any Type</option>
+                                    <option value="standard" th:selected="${param.roomType == 'standard'}">Standard</option>
+                                    <option value="deluxe" th:selected="${param.roomType == 'deluxe'}">Deluxe</option>
+                                    <option value="suite" th:selected="${param.roomType == 'suite'}">Suite</option>
+                                    <option value="family" th:selected="${param.roomType == 'family'}">Family Room</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-1">
+                            <div class="col-12">
+                                <label class="form-label">Amenities</label>
+                                <div class="row g-2">
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="wifi" name="amenities" value="wifi"
+                                                   th:checked="${#arrays.contains(param.amenities, 'wifi')}">
+                                            <label class="form-check-label" for="wifi">
+                                                <i class="fas fa-wifi me-2"></i>Free WiFi
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="pool" name="amenities" value="pool"
+                                                   th:checked="${#arrays.contains(param.amenities, 'pool')}">
+                                            <label class="form-check-label" for="pool">
+                                                <i class="fas fa-swimming-pool me-2"></i>Swimming Pool
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="parking" name="amenities" value="parking"
+                                                   th:checked="${#arrays.contains(param.amenities, 'parking')}">
+                                            <label class="form-check-label" for="parking">
+                                                <i class="fas fa-parking me-2"></i>Free Parking
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="breakfast" name="amenities" value="breakfast"
+                                                   th:checked="${#arrays.contains(param.amenities, 'breakfast')}">
+                                            <label class="form-check-label" for="breakfast">
+                                                <i class="fas fa-utensils me-2"></i>Breakfast Included
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="py-5">
+    <div class="container">
+        <!-- Results Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="mb-0">Hotels in <span th:text="${param.location ?: 'All Locations'}">All Locations</span></h3>
+                <p class="text-muted mb-0" th:if="${hotels != null}">
+                    <span th:text="${hotels.size()}">0</span> hotels found
+                </p>
+            </div>
+            <div class="d-flex align-items-center">
+                <label for="sortBy" class="me-2">Sort by:</label>
+                <select class="form-select" id="sortBy" onchange="this.form.submit()" form="sortForm">
+                    <option value="recommended" th:selected="${param.sortBy == 'recommended' || param.sortBy == null}">Recommended</option>
+                    <option value="price-low" th:selected="${param.sortBy == 'price-low'}">Price (Low to High)</option>
+                    <option value="price-high" th:selected="${param.sortBy == 'price-high'}">Price (High to Low)</option>
+                    <option value="rating" th:selected="${param.sortBy == 'rating'}">Rating</option>
+                </select>
+                <form id="sortForm" th:action="@{/services/hotels}" method="get">
+                    <input type="hidden" name="location" th:value="${param.location}">
+                    <input type="hidden" name="checkIn" th:value="${param.checkIn}">
+                    <input type="hidden" name="checkOut" th:value="${param.checkOut}">
+                    <input type="hidden" name="guests" th:value="${param.guests}">
+                    <input type="hidden" name="sortBy" id="sortByHidden">
+                </form>
+            </div>
+        </div>
+
+        <!-- Results Grid -->
+        <div class="row g-4">
+            <!-- Map View Toggle Button (Mobile Only) -->
+            <div class="col-12 d-md-none mb-3">
+                <button class="btn btn-outline-primary w-100" type="button" data-bs-toggle="collapse" data-bs-target="#mapView" aria-expanded="false" aria-controls="mapView">
+                    <i class="fas fa-map-marked-alt me-2"></i>Show Map View
+                </button>
+            </div>
+
+            <!-- Hotel Listings -->
+            <div class="col-md-7 col-lg-8">
+                <!-- No Results Message -->
+                <div th:if="${hotels == null || hotels.empty}" class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-hotel fa-4x text-muted"></i>
+                    </div>
+                    <h4>No hotels found</h4>
+                    <p class="text-muted">Try adjusting your search criteria to find available hotels.</p>
+                </div>
+
+                <!-- Hotel Cards -->
+                <div th:each="hotel : ${hotels}" class="card hotel-card mb-4 border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img th:src="${hotel.imageUrl ?: 'https://source.unsplash.com/random/300x200/?hotel'}" class="hotel-img" alt="Hotel">
+                            <button class="btn btn-sm position-absolute top-0 end-0 m-2 text-white" th:classappend="${hotel.isFavorite ? 'favorite-btn-active' : 'favorite-btn'}">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title mb-1" th:text="${hotel.name}">Hotel Name</h5>
+                                    <div class="hotel-rating">
+                                        <span th:text="${hotel.rating}">4.5</span>
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    <span th:text="${hotel.location}">Location</span>
+                                </p>
+
+                                <div class="amenities mb-3">
+                                        <span class="badge bg-light text-dark me-1" th:each="amenity : ${hotel.amenities}">
+                                            <i th:class="${amenity == 'wifi' ? 'fas fa-wifi' :
+                                                          amenity == 'pool' ? 'fas fa-swimming-pool' :
+                                                          amenity == 'parking' ? 'fas fa-parking' :
+                                                          'fas fa-utensils'}"></i>
+                                            <span th:text="${amenity == 'wifi' ? 'Free WiFi' :
+                                                            amenity == 'pool' ? 'Pool' :
+                                                            amenity == 'parking' ? 'Free Parking' :
+                                                            'Breakfast'}"></span>
+                                        </span>
+                                </div>
+
+                                <p class="card-text small mb-3" th:text="${hotel.description}">
+                                    A luxurious hotel featuring stunning views, modern amenities, and exceptional service.
+                                </p>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="hotel-price fw-bold" th:text="${'$' + hotel.pricePerNight}">$199</span>
+                                        <span class="text-muted small">per night</span>
+                                    </div>
+                                    <a th:href="@{'/services/hotels/' + ${hotel.id}}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Hotel Card (for preview) -->
+                <div class="card hotel-card mb-4 border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="https://source.unsplash.com/random/300x200/?hotel" class="hotel-img" alt="Hotel">
+                            <button class="btn btn-sm position-absolute top-0 end-0 m-2 text-white favorite-btn">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title mb-1">Grand Plaza Hotel</h5>
+                                    <div class="hotel-rating">
+                                        <span>4.5</span>
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Central Park, New York
+                                </p>
+
+                                <div class="amenities mb-3">
+                                        <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-wifi"></i> Free WiFi
+                                        </span>
+                                    <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-swimming-pool"></i> Pool
+                                        </span>
+                                    <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-parking"></i> Free Parking
+                                        </span>
+                                    <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-utensils"></i> Breakfast
+                                        </span>
+                                </div>
+
+                                <p class="card-text small mb-3">
+                                    A luxurious 5-star hotel in the heart of Manhattan, featuring stunning views of Central Park,
+                                    a rooftop pool, and world-class dining options.
+                                </p>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="hotel-price fw-bold">$299</span>
+                                        <span class="text-muted small">per night</span>
+                                    </div>
+                                    <a href="#" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card hotel-card mb-4 border-0 shadow-sm">
+                    <div class="row g-0">
+                        <div class="col-md-4">
+                            <img src="https://source.unsplash.com/random/300x200/?resort" class="hotel-img" alt="Hotel">
+                            <button class="btn btn-sm position-absolute top-0 end-0 m-2 text-white favorite-btn-active">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body d-flex flex-column h-100">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="card-title mb-1">Oceanview Resort</h5>
+                                    <div class="hotel-rating">
+                                        <span>4.8</span>
+                                        <i class="fas fa-star text-warning"></i>
+                                    </div>
+                                </div>
+                                <p class="card-text text-muted small mb-2">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Miami Beach, Florida
+                                </p>
+
+                                <div class="amenities mb-3">
+                                        <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-wifi"></i> Free WiFi
+                                        </span>
+                                    <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-swimming-pool"></i> Pool
+                                        </span>
+                                    <span class="badge bg-light text-dark me-1">
+                                            <i class="fas fa-spa"></i> Spa
+                                        </span>
+                                </div>
+
+                                <p class="card-text small mb-3">
+                                    Beachfront luxury resort with private balconies overlooking the Atlantic Ocean.
+                                    Features 3 swimming pools, a full-service spa, and 4 restaurants.
+                                </p>
+
+                                <div class="mt-auto d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="hotel-price fw-bold">$429</span>
+                                        <span class="text-muted small">per night</span>
+                                    </div>
+                                    <a href="#" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav aria-label="Hotel pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Map View (Desktop: always visible, Mobile: collapsible) -->
+            <div class="col-md-5 col-lg-4 collapse d-md-block" id="mapView">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <!-- Map Container -->
+                        <div class="map-container rounded" id="hotelMap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Similar Destinations Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h3 class="mb-4">Popular Destinations</h3>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <a href="#" class="text-decoration-none">
+                    <div class="card destination-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?new-york" class="card-img-top" alt="New York">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">New York</h5>
+                            <p class="text-muted small">1,245 hotels</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="text-decoration-none">
+                    <div class="card destination-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?paris" class="card-img-top" alt="Paris">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">Paris</h5>
+                            <p class="text-muted small">982 hotels</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="text-decoration-none">
+                    <div class="card destination-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?tokyo" class="card-img-top" alt="Tokyo">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">Tokyo</h5>
+                            <p class="text-muted small">875 hotels</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a href="#" class="text-decoration-none">
+                    <div class="card destination-card border-0 shadow-sm h-100">
+                        <img src="https://source.unsplash.com/random/300x200/?london" class="card-img-top" alt="London">
+                        <div class="card-body">
+                            <h5 class="card-title mb-0">London</h5>
+                            <p class="text-muted small">1,105 hotels</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<!-- Map Integration -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize date pickers
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('check-in').min = today;
+        document.getElementById('check-out').min = today;
+
+        // Add event listener to ensure check-out is after check-in
+        document.getElementById('check-in').addEventListener('change', function() {
+            document.getElementById('check-out').min = this.value;
+
+            // If check-out date is before check-in date, update it
+            const checkOut = document.getElementById('check-out');
+            if (checkOut.value && checkOut.value < this.value) {
+                checkOut.value = this.value;
+            }
+        });
+
+        // Sort dropdown handling
+        document.getElementById('sortBy').addEventListener('change', function() {
+            document.getElementById('sortByHidden').value = this.value;
+            document.getElementById('sortForm').submit();
+        });
+
+        // Favorite toggle
+        const favoriteButtons = document.querySelectorAll('.favorite-btn, .favorite-btn-active');
+        favoriteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.classList.toggle('favorite-btn');
+                this.classList.toggle('favorite-btn-active');
+            });
+        });
+    });
+
+    // Initialize Google Map
+    function initMap() {
+        // Map initialization code
+        const map = new google.maps.Map(document.getElementById('hotelMap'), {
+            center: { lat: 40.7128, lng: -74.0060 }, // New York coordinates as default
+            zoom: 12
+        });
+
+        // Add markers for hotels (sample)
+        const hotels = [
+            {
+                name: 'Grand Plaza Hotel',
+                position: { lat: 40.7580, lng: -73.9855 },
+                price: '$299'
+            },
+            {
+                name: 'Oceanview Resort',
+                position: { lat: 40.7590, lng: -73.9780 },
+                price: '$429'
+            }
+        ];
+
+        hotels.forEach(hotel => {
+            const marker = new google.maps.Marker({
+                position: hotel.position,
+                map: map,
+                title: hotel.name
+            });
+
+            const infowindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="width: 200px;">
+                        <h6 style="margin-bottom: 5px;">${hotel.name}</h6>
+                        <p style="margin-bottom: 5px; font-weight: bold;">${hotel.price}</p>
+                        <a href="#" style="color: #1976D2; text-decoration: none;">View Details</a>
+                    </div>
+                `
+            });
+
+            marker.addListener('click', () => {
+                infowindow.open(map, marker);
+            });
+        });
+    }
+</script>
+
+<style>
+    /* Hotel listing specific styles */
+    .hotel-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-top-left-radius: 0.375rem;
+        border-bottom-left-radius: 0.375rem;
+    }
+
+    .hotel-card {
+        transition: transform 0.2s;
+        overflow: hidden;
+    }
+
+    .hotel-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .hotel-rating {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--primary);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .hotel-rating i {
+        margin-left: 0.25rem;
+    }
+
+    .hotel-price {
+        font-size: 1.25rem;
+        color: var(--primary);
+    }
+
+    .favorite-btn {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .favorite-btn-active {
+        background-color: rgba(244, 67, 54, 0.8);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .map-container {
+        height: 100%;
+        min-height: 400px;
+    }
+
+    .destination-card {
+        transition: transform 0.2s;
+        overflow: hidden;
+    }
+
+    .destination-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .destination-card img {
+        height: 160px;
+        object-fit: cover;
+    }
+
+    @media (max-width: 768px) {
+        .hotel-img {
+            height: 200px;
+            border-top-right-radius: 0.375rem;
+            border-bottom-left-radius: 0;
+        }
+    }
+</style>
+</body>
+</html>
