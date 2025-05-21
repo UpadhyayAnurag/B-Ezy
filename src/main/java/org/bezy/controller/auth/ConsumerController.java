@@ -34,7 +34,7 @@ public class ConsumerController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteConsumer(@PathVariable Long id) {
-        // Implement deletion in service (not shown here for brevity)
+        // Implement deletion in service
         return ResponseEntity.ok("Consumer deleted");
     }
 
