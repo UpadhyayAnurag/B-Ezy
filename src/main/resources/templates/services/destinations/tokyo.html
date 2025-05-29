@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Explore Tokyo')}">
+    <title>Explore Tokyo | B-Ezy</title>
+    <style>
+        :root {
+            --primary: #1976d2;
+            --accent: #00bcd4;
+            --cta: #ff9800;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+            --tokyo-red: #dc143c;
+            --tokyo-gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .hero-tokyo {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                        url('https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center;
+            background-size: cover;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(220, 20, 60, 0.3), rgba(255, 215, 0, 0.3));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            height: 100%;
+            border: none;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .service-card img {
+            height: 220px;
+            object-fit: cover;
+            width: 100%;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .service-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-badge-hotel {
+            background: linear-gradient(45deg, var(--primary), #1565c0);
+            color: white;
+        }
+
+        .service-badge-taxi {
+            background: linear-gradient(45deg, var(--accent), #0097a7);
+            color: white;
+        }
+
+        .service-badge-car {
+            background: linear-gradient(45deg, var(--cta), #ef6c00);
+            color: white;
+        }
+
+        .btn-cta {
+            background: linear-gradient(45deg, var(--cta), #ff6f00);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-cta:hover {
+            background: linear-gradient(45deg, #ff6f00, var(--cta));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.6);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .destination-info {
+            background: linear-gradient(135deg, #f8f9fa, #fff3e0);
+            padding: 80px 0;
+        }
+
+        .highlight-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .icon-circle.primary {
+            background: linear-gradient(45deg, var(--tokyo-red), #b71c1c);
+            color: white;
+        }
+
+        .icon-circle.accent {
+            background: linear-gradient(45deg, var(--tokyo-gold), #ffb300);
+            color: #333;
+        }
+
+        .icon-circle.cta {
+            background: linear-gradient(45deg, var(--primary), #1565c0);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-tokyo {
+                min-height: 50vh;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .service-card {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<!-- Hero Section -->
+<section class="hero-tokyo">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="display-3 text-white fw-bold mb-4">Discover Tokyo</h1>
+                <p class="lead text-white mb-4 fs-4">Experience the perfect blend of traditional culture and futuristic technology in Japan's vibrant capital.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#services" class="btn btn-cta btn-lg">
+                        <i class="fas fa-map-marked-alt me-2"></i>Explore Services
+                    </a>
+                    <a href="#attractions" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-camera me-2"></i>Top Attractions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Destination Info -->
+<section class="destination-info">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Why Visit Tokyo?</h2>
+                <p class="section-subtitle">Immerse yourself in Japan's dynamic metropolis</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle primary">
+                        <i class="fas fa-torii-gate"></i>
+                    </div>
+                    <h4 class="mb-3">Rich Traditions</h4>
+                    <p>Experience ancient temples, traditional gardens, tea ceremonies, and authentic Japanese culture.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle accent">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h4 class="mb-3">Culinary Paradise</h4>
+                    <p>From sushi and ramen to street food and Michelin-starred restaurants, Tokyo is a food lover's dream.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle cta">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <h4 class="mb-3">Modern Innovation</h4>
+                    <p>Explore cutting-edge technology, futuristic architecture, and the bustling energy of a modern metropolis.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Book Your Tokyo Experience</h2>
+            <p class="section-subtitle">Everything you need for your perfect Japanese adventure</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Hotels Card -->
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1555346249-7ad15ad9b39b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tokyo Hotels">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-hotel mb-3">Hotels</span>
+                        <h5 class="card-title fw-bold mb-3">Premium Accommodations</h5>
+                        <p class="card-text text-muted mb-4">From traditional ryokans in Asakusa to modern hotels in Shibuya, find the perfect place to stay in Tokyo.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-primary fw-bold">¥8,500/night</span>
+                        </div>
+                        <a th:href="@{/services/hotels(location='Tokyo, Japan')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-bed me-2"></i>Book Hotels
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taxis Card -->
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1569154941061-e231b4725ef1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tokyo Taxis">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-taxi mb-3">Taxis</span>
+                        <h5 class="card-title fw-bold mb-3">City Navigation</h5>
+                        <p class="card-text text-muted mb-4">Navigate Tokyo's extensive metro system or book premium taxis for comfortable city travel and airport transfers.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-info fw-bold">¥500/ride</span>
+                        </div>
+                        <a th:href="@{/services/taxis(pickupLocation='Tokyo, Japan')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-taxi me-2"></i>Book Taxis
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Car Rentals Card -->
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tokyo Car Rentals">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-car mb-3">Car Rentals</span>
+                        <h5 class="card-title fw-bold mb-3">Explore Beyond Tokyo</h5>
+                        <p class="card-text text-muted mb-4">Rent a car to explore Mount Fuji, Nikko, and other beautiful destinations around the Tokyo area.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-warning fw-bold">¥6,000/day</span>
+                        </div>
+                        <a th:href="@{/services/car-rentals(pickupLocation='Tokyo, Japan')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-car me-2"></i>Rent Cars
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Attractions -->
+<section id="attractions" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Must-Visit Attractions</h2>
+            <p class="section-subtitle">Experience Tokyo's most iconic landmarks and hidden gems</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Senso-ji Temple">
+                    <div class="card-body">
+                        <h6 class="card-title">Senso-ji Temple</h6>
+                        <p class="card-text small text-muted">Ancient Buddhist temple in Asakusa</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Tokyo Skytree">
+                    <div class="card-body">
+                        <h6 class="card-title">Tokyo Skytree</h6>
+                        <p class="card-text small text-muted">World's second tallest structure</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1542640244-7e672d6cef4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Shibuya Crossing">
+                    <div class="card-body">
+                        <h6 class="card-title">Shibuya Crossing</h6>
+                        <p class="card-text small text-muted">World's busiest pedestrian crossing</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1480796927426-f609979314bd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Tokyo Imperial Palace">
+                    <div class="card-body">
+                        <h6 class="card-title">Imperial Palace</h6>
+                        <p class="card-text small text-muted">Primary residence of the Emperor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Explore Tokyo?</h2>
+        <p class="lead mb-4">Start planning your unforgettable Japanese adventure today!</p>
+        <a th:href="@{/services/hotels(location='Tokyo, Japan')}" class="btn btn-cta btn-lg me-3">
+            <i class="fas fa-plane me-2"></i>Plan Your Trip
+        </a>
+        <a th:href="@{/}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<script>
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Add loading animation for service cards
+    window.addEventListener('load', function() {
+        const cards = document.querySelectorAll('.service-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 200);
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1177 @@
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Explore New York')}">
+    <title>Explore New York | B-Ezy</title>
+    <style>
+        :root {
+            &#45;&#45;primary: #1976d2;
+            &#45;&#45;accent: #00bcd4;
+            &#45;&#45;cta: #ff9800;
+            &#45;&#45;text-dark: #333;
+            &#45;&#45;text-light: #666;
+            &#45;&#45;bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(&#45;&#45;text-dark);
+        }
+
+        .hero-newyork {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                        url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center;
+            background-size: cover;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(25, 118, 210, 0.3), rgba(0, 188, 212, 0.3));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            height: 100%;
+            border: none;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .service-card img {
+            height: 220px;
+            object-fit: cover;
+            width: 100%;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .service-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-badge-hotel {
+            background: linear-gradient(45deg, var(&#45;&#45;primary), #1565c0);
+            color: white;
+        }
+
+        .service-badge-taxi {
+            background: linear-gradient(45deg, var(&#45;&#45;accent), #0097a7);
+            color: white;
+        }
+
+        .service-badge-car {
+            background: linear-gradient(45deg, var(&#45;&#45;cta), #ef6c00);
+            color: white;
+        }
+
+        .btn-cta {
+            background: linear-gradient(45deg, var(&#45;&#45;cta), #ff6f00);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-cta:hover {
+            background: linear-gradient(45deg, #ff6f00, var(&#45;&#45;cta));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.6);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(&#45;&#45;primary);
+            color: var(&#45;&#45;primary);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(&#45;&#45;primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .btn-outline-light {
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-light:hover {
+            background: white;
+            color: var(&#45;&#45;primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .destination-info {
+            background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+            padding: 80px 0;
+        }
+
+        .highlight-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .icon-circle.primary {
+            background: linear-gradient(45deg, var(&#45;&#45;primary), #1565c0);
+            color: white;
+        }
+
+        .icon-circle.accent {
+            background: linear-gradient(45deg, var(&#45;&#45;accent), #0097a7);
+            color: white;
+        }
+
+        .icon-circle.cta {
+            background: linear-gradient(45deg, var(&#45;&#45;cta), #ef6c00);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(&#45;&#45;text-dark);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(&#45;&#45;text-light);
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-newyork {
+                min-height: 50vh;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .service-card {
+                margin-bottom: 30px;
+            }
+
+            .btn-lg {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+
+            .display-3 {
+                font-size: 2.5rem;
+            }
+        }
+        /* Equal height for all service cards */
+        .service-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Ensure card-body fills remaining space */
+        .service-card .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Equal height image container to balance layout */
+        .service-card img {
+            height: 220px;
+            width: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+&lt;!&ndash; Navigation &ndash;&gt;
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+&lt;!&ndash; Hero Section &ndash;&gt;
+<section class="hero-newyork">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="display-3 text-white fw-bold mb-4">Discover New York</h1>
+                <p class="lead text-white mb-4 fs-4">The city that never sleeps with its iconic skyline, diverse neighborhoods, and endless entertainment.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#services" class="btn btn-cta btn-lg">
+                        <i class="fas fa-map-marked-alt me-2"></i>Explore Services
+                    </a>
+                    <a href="#attractions" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-camera me-2"></i>Top Attractions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+&lt;!&ndash; Destination Info &ndash;&gt;
+<section class="destination-info">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Why Visit New York?</h2>
+                <p class="section-subtitle">Experience the energy and diversity of America's greatest city</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle primary">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h4 class="mb-3">Iconic Skyline</h4>
+                    <p>Marvel at the Empire State Building, One World Trade Center, and the stunning Manhattan skyline.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle accent">
+                        <i class="fas fa-theater-masks"></i>
+                    </div>
+                    <h4 class="mb-3">Broadway Shows</h4>
+                    <p>Experience world-class theater productions in the heart of Times Square and Theater District.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle cta">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="mb-3">Diverse Culture</h4>
+                    <p>Explore vibrant neighborhoods from Chinatown to Little Italy, each with its unique character.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+&lt;!&ndash; Services Section &ndash;&gt;
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Book Your New York Experience</h2>
+            <p class="section-subtitle">Everything you need for your perfect Big Apple adventure</p>
+        </div>
+
+        <div class="row g-4">
+            &lt;!&ndash; Hotels Card &ndash;&gt;
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="New York Hotels">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-hotel mb-3">Hotels</span>
+                        <h5 class="card-title fw-bold mb-3">Manhattan Accommodations</h5>
+                        <p class="card-text text-muted mb-4">Stay in luxury hotels in Midtown, boutique properties in SoHo, or modern accommodations near Central Park.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-primary fw-bold">$149/night</span>
+                        </div>
+                        <a th:href="@{/services/hotels(location='New York, USA')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-bed me-2"></i>Book Hotels
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            &lt;!&ndash; Taxis Card &ndash;&gt;
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1485739139909-1d4b5746035b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="New York Taxis">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-taxi mb-3">Taxis</span>
+                        <h5 class="card-title fw-bold mb-3">Yellow Cab & Rides</h5>
+                        <p class="card-text text-muted mb-4">Navigate NYC's busy streets with reliable taxi service. Perfect for airport transfers and quick city trips.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-info fw-bold">$15/ride</span>
+                        </div>
+                        <a th:href="@{/services/taxis(pickupLocation='New York, USA')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-taxi me-2"></i>Book Taxis
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            &lt;!&ndash; Car Rentals Card &ndash;&gt;
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="New York Car Rentals">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-car mb-3">Car Rentals</span>
+                        <h5 class="card-title fw-bold mb-3">City & Beyond</h5>
+                        <p class="card-text text-muted mb-4">Rent a car to explore NYC boroughs and venture into upstate New York's scenic landscapes.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-warning fw-bold">$65/day</span>
+                        </div>
+                        <a th:href="@{/services/car-rentals(pickupLocation='New York, USA')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-car me-2"></i>Rent Cars
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+&lt;!&ndash; Top Attractions &ndash;&gt;
+<section id="attractions" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Must-Visit Attractions</h2>
+            <p class="section-subtitle">Don't miss these iconic New York landmarks</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Statue of Liberty">
+                    <div class="card-body">
+                        <h6 class="card-title">Statue of Liberty</h6>
+                        <p class="card-text small text-muted">Symbol of freedom and democracy</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Empire State Building">
+                    <div class="card-body">
+                        <h6 class="card-title">Empire State Building</h6>
+                        <p class="card-text small text-muted">Art Deco masterpiece</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Times Square">
+                    <div class="card-body">
+                        <h6 class="card-title">Times Square</h6>
+                        <p class="card-text small text-muted">The crossroads of the world</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1518391846015-55a9cc003b25?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Central Park">
+                    <div class="card-body">
+                        <h6 class="card-title">Central Park</h6>
+                        <p class="card-text small text-muted">Manhattan's green oasis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+&lt;!&ndash; Call to Action &ndash;&gt;
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Explore New York?</h2>
+        <p class="lead mb-4">Start planning your unforgettable Big Apple adventure today!</p>
+        <a th:href="@{/services/hotels(location='New York, USA')}" class="btn btn-cta btn-lg me-3">
+            <i class="fas fa-plane me-2"></i>Plan Your Trip
+        </a>
+        <a th:href="@{/}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+    </div>
+</section>
+
+&lt;!&ndash; Footer &ndash;&gt;
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+&lt;!&ndash; Scripts &ndash;&gt;
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<script>
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Add loading animation for service cards
+    window.addEventListener('load', function() {
+        const cards = document.querySelectorAll('.service-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 200);
+        });
+    });
+
+    // Add parallax effect to hero section
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero-newyork');
+        if (hero) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+    });
+</script>
+</body>
+</html>-->
+
+
+
+
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>🇺🇸 Explore New York</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .hero { background: #198754; color: white; padding: 4rem 1rem; text-align: center; }
+        .section { padding: 2rem; }
+        .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; width: 300px; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 1rem; text-align: center; }
+        .btn { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: #198754; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .btn:hover { background: black; }
+
+/* Equal height for all service cards */
+.service-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.service-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.service-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.service-card img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.service-card:hover img {
+    transform: scale(1.05);
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>🇺🇸 Explore New York</h1>
+</div>
+
+<div class="section">
+    <div class="row">
+        <div class="card">
+            <img src="https://source.unsplash.com/400x250/?hotel,newyork" alt="Hotels">
+            <div class="card-body">
+                <h3>Hotels</h3>
+                <p>Top places to stay in New York</p>
+                <a href="#" class="btn">Browse Hotels</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://source.unsplash.com/400x250/?taxi,newyork" alt="Taxis">
+            <div class="card-body">
+                <h3>Taxis</h3>
+                <p>Book a cab in New York</p>
+                <a href="#" class="btn">Book Taxi</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://source.unsplash.com/400x250/?car,newyork" alt="Car Rentals">
+            <div class="card-body">
+                <h3>Car Rentals</h3>
+                <p>Rent a car in New York</p>
+                <a href="#" class="btn">Rent Car</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>-->
+
+
+
+<!--
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>🇺🇸 Explore New York</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+        .hero { background: #198754; color: white; padding: 4rem 1rem; text-align: center; }
+        .section { padding: 2rem; }
+        .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.3s ease, box-shadow 0.3s ease; width: 300px; }
+        .card:hover { transform: translateY(-6px); box-shadow: 0 12px 24px rgba(0,0,0,0.15); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 1rem; text-align: center; }
+        .btn { display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: #198754; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .btn:hover { background: black; }
+
+/* Equal height for all service cards */
+.service-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.service-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.service-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.service-card img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.service-card:hover img {
+    transform: scale(1.05);
+}
+
+</style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>🇺🇸 Explore New York</h1>
+</div>
+
+<div class="section">
+    <div class="row">
+        <div class="card">
+            <img src="https://source.unsplash.com/400x250/?hotel,newyork" alt="Hotels">
+            <div class="card-body">
+                <h3>Hotels</h3>
+                <p>Top places to stay in New York</p>
+                <a href="#" class="btn">Browse Hotels</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://source.unsplash.com/400x250/?taxi,newyork" alt="Taxis">
+            <div class="card-body">
+                <h3>Taxis</h3>
+                <p>Book a cab in New York</p>
+                <a href="#" class="btn">Book Taxi</a>
+            </div>
+        </div>
+        <div class="card">
+            <img src="https://source.unsplash.com/400x250/?car,newyork" alt="Car Rentals">
+            <div class="card-body">
+                <h3>Car Rentals</h3>
+                <p>Rent a car in New York</p>
+                <a href="#" class="btn">Rent Car</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>-->
+
+
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Explore New York')}">
+    <title>Explore New York | B-Ezy</title>
+    <style>
+        :root {
+            --primary: #1976d2;
+            --accent: #00bcd4;
+            --cta: #ff9800;
+            --text-dark: #333;
+            --text-light: #666;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .hero-newyork {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                        url('https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center;
+            background-size: cover;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(25, 118, 210, 0.3), rgba(0, 188, 212, 0.3));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            height: 100%;
+            border: none;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .service-card img {
+            height: 220px;
+            object-fit: cover;
+            width: 100%;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .service-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .service-badge-hotel {
+            background: linear-gradient(45deg, var(--primary), #1565c0);
+            color: white;
+        }
+
+        .service-badge-taxi {
+            background: linear-gradient(45deg, var(--accent), #0097a7);
+            color: white;
+        }
+
+        .service-badge-car {
+            background: linear-gradient(45deg, var(--cta), #ef6c00);
+            color: white;
+        }
+
+        .btn-cta {
+            background: linear-gradient(45deg, var(--cta), #ff6f00);
+            border: none;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+        }
+
+        .btn-cta:hover {
+            background: linear-gradient(45deg, #ff6f00, var(--cta));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 152, 0, 0.6);
+            color: white;
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(25, 118, 210, 0.4);
+        }
+
+        .btn-outline-light {
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            background: transparent;
+        }
+
+        .btn-outline-light:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .destination-info {
+            background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+            padding: 80px 0;
+        }
+
+        .highlight-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .highlight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .icon-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 20px;
+        }
+
+        .icon-circle.primary {
+            background: linear-gradient(45deg, var(--primary), #1565c0);
+            color: white;
+        }
+
+        .icon-circle.accent {
+            background: linear-gradient(45deg, var(--accent), #0097a7);
+            color: white;
+        }
+
+        .icon-circle.cta {
+            background: linear-gradient(45deg, var(--cta), #ef6c00);
+            color: white;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-newyork {
+                min-height: 50vh;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .service-card {
+                margin-bottom: 30px;
+            }
+
+            .btn-lg {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+
+            .display-3 {
+                font-size: 2.5rem;
+            }
+        }
+
+/* Equal height for all service cards */
+.service-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+.service-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.service-card .card-body {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.service-card img {
+    height: 220px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.service-card:hover img {
+    transform: scale(1.05);
+}
+
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<!-- Hero Section -->
+<section class="hero-newyork">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="display-3 text-white fw-bold mb-4">Discover New York</h1>
+                <p class="lead text-white mb-4 fs-4">The city that never sleeps with its iconic skyline, diverse neighborhoods, and endless entertainment.</p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#services" class="btn btn-cta btn-lg">
+                        <i class="fas fa-map-marked-alt me-2"></i>Explore Services
+                    </a>
+                    <a href="#attractions" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-camera me-2"></i>Top Attractions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Destination Info -->
+<section class="destination-info">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-12">
+                <h2 class="section-title">Why Visit New York?</h2>
+                <p class="section-subtitle">Experience the energy and diversity of America's greatest city</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle primary">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h4 class="mb-3">Iconic Skyline</h4>
+                    <p>Marvel at the Empire State Building, One World Trade Center, and the stunning Manhattan skyline.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle accent">
+                        <i class="fas fa-theater-masks"></i>
+                    </div>
+                    <h4 class="mb-3">Broadway Shows</h4>
+                    <p>Experience world-class theater productions in the heart of Times Square and Theater District.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="highlight-card text-center">
+                    <div class="icon-circle cta">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="mb-3">Diverse Culture</h4>
+                    <p>Explore vibrant neighborhoods from Chinatown to Little Italy, each with its unique character.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Book Your New York Experience</h2>
+            <p class="section-subtitle">Everything you need for your perfect Big Apple adventure</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Hotels Card -->
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="New York Hotels">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-hotel mb-3">Hotels</span>
+                        <h5 class="card-title fw-bold mb-3">Manhattan Accommodations</h5>
+                        <p class="card-text text-muted mb-4">Stay in luxury hotels in Midtown, boutique properties in SoHo, or modern accommodations near Central Park.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-primary fw-bold">$149/night</span>
+                        </div>
+                        <a th:href="@{/services/hotels(location='New York, USA')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-bed me-2"></i>Book Hotels
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taxis Card -->
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1485739139909-1d4b5746035b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="New York Taxis">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-taxi mb-3">Taxis</span>
+                        <h5 class="card-title fw-bold mb-3">Yellow Cab & Rides</h5>
+                        <p class="card-text text-muted mb-4">Navigate NYC's busy streets with reliable taxi service. Perfect for airport transfers and quick city trips.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-info fw-bold">$15/ride</span>
+                        </div>
+                        <a th:href="@{/services/taxis(pickupLocation='New York, USA')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-taxi me-2"></i>Book Taxis
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Car Rentals Card -->
+            <div class="col-md-4">
+                <div class="service-card">
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="New York Car Rentals">
+                    <div class="card-body p-4">
+                        <span class="service-badge service-badge-car mb-3">Car Rentals</span>
+                        <h5 class="card-title fw-bold mb-3">City & Beyond</h5>
+                        <p class="card-text text-muted mb-4">Rent a car to explore NYC boroughs and venture into upstate New York's scenic landscapes.</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted small">From</span>
+                            <span class="h5 mb-0 text-warning fw-bold">$65/day</span>
+                        </div>
+                        <a th:href="@{/services/car-rentals(pickupLocation='New York, USA')}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-car me-2"></i>Rent Cars
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Top Attractions -->
+<section id="attractions" class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Must-Visit Attractions</h2>
+            <p class="section-subtitle">Don't miss these iconic New York landmarks</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1548013146-72479768bada?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Statue of Liberty">
+                    <div class="card-body">
+                        <h6 class="card-title">Statue of Liberty</h6>
+                        <p class="card-text small text-muted">Symbol of freedom and democracy</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Empire State Building">
+                    <div class="card-body">
+                        <h6 class="card-title">Empire State Building</h6>
+                        <p class="card-text small text-muted">Art Deco masterpiece</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Times Square">
+                    <div class="card-body">
+                        <h6 class="card-title">Times Square</h6>
+                        <p class="card-text small text-muted">The crossroads of the world</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1518391846015-55a9cc003b25?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Central Park">
+                    <div class="card-body">
+                        <h6 class="card-title">Central Park</h6>
+                        <p class="card-text small text-muted">Manhattan's green oasis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Explore New York?</h2>
+        <p class="lead mb-4">Start planning your unforgettable Big Apple adventure today!</p>
+        <a th:href="@{/services/hotels(location='New York, USA')}" class="btn btn-cta btn-lg me-3">
+            <i class="fas fa-plane me-2"></i>Plan Your Trip
+        </a>
+        <a th:href="@{/}" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<script>
+    // Add smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    // Add loading animation for service cards
+    window.addEventListener('load', function() {
+        const cards = document.querySelectorAll('.service-card');
+        cards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, 100);
+            }, index * 200);
+        });
+    });
+
+    // Add parallax effect to hero section
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const hero = document.querySelector('.hero-newyork');
+        if (hero) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+    });
+</script>
+</body>
+</html>

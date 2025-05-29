@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Flights')}">
+    <title>Flights | B-Ezy</title>
+    <link rel="stylesheet" th:href="@{/css/services.css}">
+</head>
+<body>
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<section class="hero py-5" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://source.unsplash.com/1600x900/?hotel') no-repeat center center; background-size: cover;">
+    <div class="container py-5">
+        <div class="row py-4">
+            <div class="col-lg-8">
+                <h1 class="display-4 text-white fw-bold mb-3">Explore the world, with ease</h1>
+                <p class="lead text-white mb-0">Find Best Flights for your next journey</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="search-section py-5 bg-light">
+    <div class="container">
+        <div class="search-box">
+            <h2 class="mb-4">Search Flights</h2>
+            <form th:action="@{/services/flights/search}" method="get">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="from" class="form-label">From</label>
+                        <input type="text" id="from" name="from" class="form-control" th:value="${param.from ?: ''}" placeholder="Departure city">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="to" class="form-label">To</label>
+                        <input type="text" id="to" name="to" class="form-control" th:value="${param.to ?: ''}" placeholder="Destination city">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" id="date" name="date" class="form-control" th:value="${param.date ?: ''}">
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary mt-3">Search Flights</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<th:block th:if="${param.from != null or param.to != null or param.date != null}">
+    <section class="py-5">
+        <div class="container">
+            <h3 class="mb-4">Available Flights</h3>
+            <p class="text-muted">Showing flights from <strong th:text="${param.from}">X</strong> to <strong th:text="${param.to}">Y</strong>.</p>
+            <div class="text-center text-muted">[Flight results go here]</div>
+        </div>
+    </section>
+</th:block>
+
+<section class="py-5 bg-white">
+    <div class="container">
+        <h3 class="mb-4">Recommended Flights</h3>
+        <div class="row g-4">
+            <div class="col-md-3" th:each="i : ${#numbers.sequence(1, 4)}">
+                <div class="card h-100 shadow-sm border-0 hover-zoom">
+                    <img th:src="'https://source.unsplash.com/random/400x300/?airplane,' + ${i}" class="card-img-top" alt="Flight">
+                    <div class="card-body">
+                        <span class="badge bg-info text-dark mb-2">RECOMMENDED</span>
+                        <h5 class="card-title fw-bold">Flight Option <span th:text="${i}">1</span></h5>
+                        <p class="card-text text-muted small">Comfortable and budget-friendly.</p>
+                        <p class="mb-1"><strong>$199</strong></p>
+                        <div class="text-warning">&#9733; 4.5 <small class="text-muted">(112 reviews)</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+</body>
+</html>

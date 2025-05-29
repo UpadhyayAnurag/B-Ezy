@@ -14,7 +14,7 @@ public class HotelController {
     @Autowired
     private HotelService hotelService;
 
-    @GetMapping
+    @GetMapping("/services/hotels/search")
     public ResponseEntity<List<Hotel>> getAllHotels() {
         List<Hotel> hotels = hotelService.getAllHotels();
         return ResponseEntity.ok(hotels);

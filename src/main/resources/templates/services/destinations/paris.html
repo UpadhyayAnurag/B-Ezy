@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Explore Paris')}">
+  <title>Explore Paris | B-Ezy</title>
+  <style>
+    :root {
+        --primary: #1976d2;
+        --accent: #00bcd4;
+        --cta: #ff9800;
+        --text-dark: #333;
+        --text-light: #666;
+        --bg-light: #f8f9fa;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+    }
+
+    .hero-paris {
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)),
+                    url('https://images.unsplash.com/photo-1502602898536-47ad22581b52?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80') no-repeat center center;
+        background-size: cover;
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(25, 118, 210, 0.3), rgba(0, 188, 212, 0.3));
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .service-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+        height: 100%;
+        border: none;
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .service-card img {
+        height: 220px;
+        object-fit: cover;
+        width: 100%;
+        transition: transform 0.4s ease;
+    }
+
+    .service-card:hover img {
+        transform: scale(1.1);
+    }
+
+    .service-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 25px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .service-badge-hotel {
+        background: linear-gradient(45deg, var(--primary), #1565c0);
+        color: white;
+    }
+
+    .service-badge-taxi {
+        background: linear-gradient(45deg, var(--accent), #0097a7);
+        color: white;
+    }
+
+    .service-badge-car {
+        background: linear-gradient(45deg, var(--cta), #ef6c00);
+        color: white;
+    }
+
+    .btn-cta {
+        background: linear-gradient(45deg, var(--cta), #ff6f00);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+    }
+
+    .btn-cta:hover {
+        background: linear-gradient(45deg, #ff6f00, var(--cta));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 152, 0, 0.6);
+        color: white;
+    }
+
+    .btn-outline-primary {
+        border: 2px solid var(--primary);
+        color: var(--primary);
+        padding: 10px 25px;
+        border-radius: 25px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        background: transparent;
+    }
+
+    .btn-outline-primary:hover {
+        background: var(--primary);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(25, 118, 210, 0.4);
+    }
+
+    .destination-info {
+        background: linear-gradient(135deg, #f8f9fa, #e3f2fd);
+        padding: 80px 0;
+    }
+
+    .highlight-card {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .highlight-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 20px;
+    }
+
+    .icon-circle.primary {
+        background: linear-gradient(45deg, var(--primary), #1565c0);
+        color: white;
+    }
+
+    .icon-circle.accent {
+        background: linear-gradient(45deg, var(--accent), #0097a7);
+        color: white;
+    }
+
+    .icon-circle.cta {
+        background: linear-gradient(45deg, var(--cta), #ef6c00);
+        color: white;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-dark);
+    }
+
+    .section-subtitle {
+        font-size: 1.2rem;
+        color: var(--text-light);
+        margin-bottom: 50px;
+    }
+
+    @media (max-width: 768px) {
+        .hero-paris {
+            min-height: 50vh;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .service-card {
+            margin-bottom: 30px;
+        }
+    }
+  </style>
+</head>
+<body>
+<!-- Navigation -->
+<header th:replace="~{fragments/header :: navbar}"></header>
+
+<!-- Hero Section -->
+<section class="hero-paris">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1 class="display-3 text-white fw-bold mb-4">Discover Paris</h1>
+        <p class="lead text-white mb-4 fs-4">The City of Light awaits with its iconic landmarks, world-class cuisine, and romantic atmosphere.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#services" class="btn btn-cta btn-lg">
+            <i class="fas fa-map-marked-alt me-2"></i>Explore Services
+          </a>
+          <a href="#attractions" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-camera me-2"></i>Top Attractions
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Destination Info -->
+<section class="destination-info">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="section-title">Why Visit Paris?</h2>
+        <p class="section-subtitle">Experience the magic of France's capital city</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="highlight-card text-center">
+          <div class="icon-circle primary">
+            <i class="fas fa-landmark"></i>
+          </div>
+          <h4 class="mb-3">Iconic Landmarks</h4>
+          <p>Visit the Eiffel Tower, Louvre Museum, Notre-Dame Cathedral, and Arc de Triomphe.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="highlight-card text-center">
+          <div class="icon-circle accent">
+            <i class="fas fa-utensils"></i>
+          </div>
+          <h4 class="mb-3">Culinary Excellence</h4>
+          <p>Indulge in French cuisine, from street-side cafés to Michelin-starred restaurants.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="highlight-card text-center">
+          <div class="icon-circle cta">
+            <i class="fas fa-palette"></i>
+          </div>
+          <h4 class="mb-3">Art & Culture</h4>
+          <p>Explore world-renowned museums, galleries, and the charming Montmartre district.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Book Your Paris Experience</h2>
+      <p class="section-subtitle">Everything you need for your perfect Parisian getaway</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Hotels Card -->
+      <div class="col-md-4">
+        <div class="service-card">
+          <img src="https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paris Hotels">
+          <div class="card-body p-4">
+            <span class="service-badge service-badge-hotel mb-3">Hotels</span>
+            <h5 class="card-title fw-bold mb-3">Luxury Accommodations</h5>
+            <p class="card-text text-muted mb-4">Stay in elegant hotels near the Champs-Élysées, cozy boutique properties in Le Marais, or classic Parisian apartments.</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">From</span>
+              <span class="h5 mb-0 text-primary fw-bold">€89/night</span>
+            </div>
+            <a th:href="@{/services/hotels(location='Paris, France')}" class="btn btn-outline-primary w-100">
+              <i class="fas fa-bed me-2"></i>Book Hotels
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Taxis Card -->
+      <div class="col-md-4">
+        <div class="service-card">
+          <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paris Taxis">
+          <div class="card-body p-4">
+            <span class="service-badge service-badge-taxi mb-3">Taxis</span>
+            <h5 class="card-title fw-bold mb-3">City Transportation</h5>
+            <p class="card-text text-muted mb-4">Navigate Paris with ease using our reliable taxi service. Perfect for airport transfers and city tours.</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">From</span>
+              <span class="h5 mb-0 text-info fw-bold">€25/ride</span>
+            </div>
+            <a th:href="@{/services/taxis(pickupLocation='Paris, France')}" class="btn btn-outline-primary w-100">
+              <i class="fas fa-taxi me-2"></i>Book Taxis
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Car Rentals Card -->
+      <div class="col-md-4">
+        <div class="service-card">
+          <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Paris Car Rentals">
+          <div class="card-body p-4">
+            <span class="service-badge service-badge-car mb-3">Car Rentals</span>
+            <h5 class="card-title fw-bold mb-3">Freedom to Explore</h5>
+            <p class="card-text text-muted mb-4">Rent a car to explore Paris and the beautiful French countryside at your own pace.</p>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted small">From</span>
+              <span class="h5 mb-0 text-warning fw-bold">€45/day</span>
+            </div>
+            <a th:href="@{/services/car-rentals(pickupLocation='Paris, France')}" class="btn btn-outline-primary w-100">
+              <i class="fas fa-car me-2"></i>Rent Cars
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Top Attractions -->
+<section id="attractions" class="py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Must-Visit Attractions</h2>
+      <p class="section-subtitle">Don't miss these iconic Parisian landmarks</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <img src="https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Eiffel Tower">
+          <div class="card-body">
+            <h6 class="card-title">Eiffel Tower</h6>
+            <p class="card-text small text-muted">The iconic symbol of Paris</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <img src="https://images.unsplash.com/photo-1566049933301-c535803d1ff9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Louvre Museum">
+          <div class="card-body">
+            <h6 class="card-title">Louvre Museum</h6>
+            <p class="card-text small text-muted">World's largest art museum</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <img src="https://images.unsplash.com/photo-1520637836862-4d197d17c33a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Notre-Dame">
+          <div class="card-body">
+            <h6 class="card-title">Notre-Dame Cathedral</h6>
+            <p class="card-text small text-muted">Gothic architectural masterpiece</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <img src="https://images.unsplash.com/photo-1605038450575-b94baa5f5b1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" class="card-img-top" alt="Arc de Triomphe">
+          <div class="card-body">
+            <h6 class="card-title">Arc de Triomphe</h6>
+            <p class="card-text small text-muted">Monument to fallen soldiers</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+  <div class="container text-center">
+    <h2 class="mb-4">Ready to Explore Paris?</h2>
+    <p class="lead mb-4">Start planning your unforgettable Parisian adventure today!</p>
+    <a th:href="@{/services/hotels(location='Paris, France')}" class="btn btn-cta btn-lg me-3">
+      <i class="fas fa-plane me-2"></i>Plan Your Trip
+    </a>
+    <a th:href="@{/}" class="btn btn-outline-light btn-lg">
+      <i class="fas fa-home me-2"></i>Back to Home
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+
+<!-- Scripts -->
+<th:block th:replace="~{fragments/footer :: scripts}"></th:block>
+
+<script>
+  // Add smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+              behavior: 'smooth'
+          });
+      });
+  });
+
+  // Add loading animation for service cards
+  window.addEventListener('load', function() {
+      const cards = document.querySelectorAll('.service-card');
+      cards.forEach((card, index) => {
+          setTimeout(() => {
+              card.style.opacity = '0';
+              card.style.transform = 'translateY(30px)';
+              card.style.transition = 'all 0.6s ease';
+
+              setTimeout(() => {
+                  card.style.opacity = '1';
+                  card.style.transform = 'translateY(0)';
+              }, 100);
+          }, index * 200);
+      });
+  });
+</script>
+</body>
+</html>
